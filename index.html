@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecoverFlow — Récupérez vos paiements échoués automatiquement</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --purple: #635bff;
+    --purple-dark: #4b44d4;
+    --purple-light: #ede9ff;
+    --black: #0a0a0a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --green: #10b981;
+    --red: #ef4444;
+    --border: #e5e7eb;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--purple);
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--black); }
+
+  nav a {
+    text-decoration: none;
+    color: var(--gray);
+    font-size: 14px;
+    margin-left: 2rem;
+  }
+
+  .nav-cta {
+    background: var(--purple);
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px !important;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--purple-dark); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 2rem 80px;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-light);
+    color: var(--purple);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .badge::before {
+    content: '✦';
+    font-size: 10px;
+  }
+
+  h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+    color: var(--black);
+  }
+
+  h1 span {
+    color: var(--purple);
+    position: relative;
+  }
+
+  .hero p {
+    font-size: 20px;
+    color: var(--gray);
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .btn-primary {
+    background: var(--purple);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--purple-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(99,91,255,0.35);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--black);
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+
+  .hero-note {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .hero-note strong { color: var(--green); }
+
+  /* STATS */
+  .stats {
+    background: var(--black);
+    padding: 60px 2rem;
+  }
+
+  .stats-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--purple);
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: #9ca3af;
+  }
+
+  /* PROBLÈME */
+  .section {
+    padding: 80px 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    font-size: 18px;
+    color: var(--gray);
+    max-width: 560px;
+    margin-bottom: 3rem;
+  }
+
+  /* COMMENT ÇA MARCHE */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .step {
+    background: var(--light);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    background: var(--purple);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 1rem;
+  }
+
+  .step h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .step p {
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* FEATURES */
+  .features {
+    background: var(--light);
+    padding: 80px 2rem;
+  }
+
+  .features-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .feature-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--purple);
+    box-shadow: 0 4px 24px rgba(99,91,255,0.1);
+  }
+
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* PRICING */
+  .pricing {
+    padding: 80px 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+    text-align: left;
+  }
+
+  .plan {
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .plan.featured {
+    border-color: var(--purple);
+    background: var(--purple-light);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--purple);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 16px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .plan-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .plan-price {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    color: var(--black);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .plan-price span {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--gray);
+  }
+
+  .plan-desc {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 2rem;
+  }
+
+  .plan-features li {
+    font-size: 14px;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--black);
+  }
+
+  .plan-features li::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .plan-features li.no::before {
+    content: '✕';
+    color: var(--red);
+  }
+
+  .plan-cta {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .plan-cta.primary {
+    background: var(--purple);
+    color: white;
+  }
+
+  .plan-cta.primary:hover {
+    background: var(--purple-dark);
+  }
+
+  .plan-cta.outline {
+    border: 1.5px solid var(--border);
+    color: var(--black);
+  }
+
+  .plan-cta.outline:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+
+  /* FAQ */
+  .faq {
+    background: var(--light);
+    padding: 80px 2rem;
+  }
+
+  .faq-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--black);
+  }
+
+  .faq-q::after {
+    content: '+';
+    font-size: 20px;
+    color: var(--purple);
+    transition: transform 0.2s;
+  }
+
+  .faq-q.open::after {
+    transform: rotate(45deg);
+  }
+
+  .faq-a {
+    display: none;
+    padding: 0 1.5rem 1.25rem;
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+
+  .faq-a.open { display: block; }
+
+  /* TÉMOIGNAGES */
+  .testimonials {
+    padding: 80px 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .testi-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+  }
+
+  .testi-stars {
+    color: #f59e0b;
+    font-size: 16px;
+    margin-bottom: 1rem;
+  }
+
+  .testi-text {
+    font-size: 15px;
+    color: var(--black);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    font-style: italic;
+  }
+
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .testi-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--purple);
+  }
+
+  .testi-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .testi-role {
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  /* CTA FINAL */
+  .final-cta {
+    background: var(--black);
+    padding: 100px 2rem;
+    text-align: center;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    color: white;
+    letter-spacing: -2px;
+    margin-bottom: 1rem;
+  }
+
+  .final-cta h2 span { color: var(--purple); }
+
+  .final-cta p {
+    font-size: 18px;
+    color: #9ca3af;
+    margin-bottom: 2.5rem;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    border-top: 1px solid #1f2937;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  /* FORM */
+  .trial-form {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .trial-form input {
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    font-size: 15px;
+    width: 280px;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  .trial-form input:focus {
+    border-color: var(--purple);
+  }
+
+  .trial-form button {
+    padding: 14px 28px;
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .trial-form button:hover {
+    background: var(--purple-dark);
+  }
+
+  @media (max-width: 640px) {
+    .trial-form input { width: 100%; }
+    .trial-form { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Recover<span>Flow</span></div>
+  <div>
+    <a href="#comment">Comment ça marche</a>
+    <a href="#tarifs">Tarifs</a>
+    <a href="#faq">FAQ</a>
+    <a href="#essai" class="nav-cta">Essai gratuit 7 jours</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">Nouveau — Récupération automatique des paiements</div>
+  <h1>Arrêtez de perdre de l'argent sur les <span>paiements échoués</span></h1>
+  <p>RecoverFlow détecte automatiquement chaque échec de paiement Stripe et relance vos clients par email — sans que vous n'ayez à lever le petit doigt.</p>
+  <div class="hero-cta">
+    <a href="#essai" class="btn-primary">Commencer l'essai gratuit →</a>
+    <a href="#comment" class="btn-secondary">Voir comment ça marche</a>
+  </div>
+  <p class="hero-note"><strong>7 jours gratuits</strong> — Sans carte bancaire — Annulation à tout moment</p>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-number">23%</div>
+      <div class="stat-label">des paiements échouent chaque mois en moyenne</div>
+    </div>
+    <div>
+      <div class="stat-number">72%</div>
+      <div class="stat-label">des clients paient après une relance automatique</div>
+    </div>
+    <div>
+      <div class="stat-number">$0</div>
+      <div class="stat-label">à investir — fonctionne 24h/24 sans vous</div>
+    </div>
+    <div>
+      <div class="stat-number">5min</div>
+      <div class="stat-label">pour connecter votre compte Stripe et démarrer</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="section" id="comment">
+  <p class="section-label">Comment ça marche</p>
+  <h2 class="section-title">Branchez-vous. Oubliez. Récupérez.</h2>
+  <p class="section-sub">En moins de 5 minutes, votre système de relance automatique est actif pour toujours.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Connectez votre Stripe</h3>
+      <p>Copiez votre URL webhook RecoverFlow dans votre dashboard Stripe. Ça prend 2 minutes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>RecoverFlow détecte tout</h3>
+      <p>Dès qu'un paiement échoue chez un de vos clients, notre système le capte instantanément.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Email automatique envoyé</h3>
+      <p>Votre client reçoit un email professionnel avec un lien direct pour mettre à jour sa carte.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Vous récupérez l'argent</h3>
+      <p>Le client paie, votre abonnement reprend. Vous n'avez rien fait — RecoverFlow a tout géré.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<div class="features">
+  <div class="features-inner">
+    <p class="section-label">Fonctionnalités</p>
+    <h2 class="section-title">Tout ce dont vous avez besoin</h2>
+    <p class="section-sub">Une seule plateforme pour récupérer chaque centime perdu automatiquement.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Détection en temps réel</h3>
+        <p>Chaque échec de paiement est intercepté en moins d'une seconde grâce à notre intégration Stripe directe.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📧</div>
+        <h3>Emails de relance intelligents</h3>
+        <p>Des emails professionnels envoyés automatiquement avec un lien de paiement direct. Taux de récupération jusqu'à 72%.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Sécurité niveau bancaire</h3>
+        <p>Validation cryptographique de chaque webhook Stripe. Vos données et celles de vos clients sont protégées à 100%.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>Relances séquentielles</h3>
+        <p>Si le client ne réagit pas, un 2ème email est envoyé à J+2, puis un 3ème à J+5. Automatiquement.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Dashboard en temps réel</h3>
+        <p>Suivez vos revenus récupérés, le nombre de relances envoyées et le taux de succès en un coup d'œil.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>100% automatique</h3>
+        <p>Une fois configuré, RecoverFlow tourne 24h/24 sans aucune intervention de votre part. Zéro maintenance.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TARIFS -->
+<section class="pricing" id="tarifs">
+  <p class="section-label">Tarifs</p>
+  <h2 class="section-title">Simple, transparent, rentable</h2>
+  <p class="section-sub">Commencez gratuitement. Payez seulement quand vous récupérez de l'argent.</p>
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">Gratuit</div>
+      <div class="plan-price">$0 <span>/ 7 jours</span></div>
+      <div class="plan-desc">Essayez sans engagement ni carte bancaire.</div>
+      <ul class="plan-features">
+        <li>Connexion Stripe illimitée</li>
+        <li>Jusqu'à 50 relances</li>
+        <li>Emails automatiques</li>
+        <li class="no">Relances séquentielles</li>
+        <li class="no">Dashboard avancé</li>
+        <li class="no">Support prioritaire</li>
+      </ul>
+      <a href="#essai" class="plan-cta outline">Commencer gratuitement</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">Le plus populaire</div>
+      <div class="plan-name">Premium</div>
+      <div class="plan-price">$29 <span>/ mois</span></div>
+      <div class="plan-desc">Tout ce qu'il faut pour récupérer chaque paiement échoué.</div>
+      <ul class="plan-features">
+        <li>Connexion Stripe illimitée</li>
+        <li>Relances illimitées</li>
+        <li>Emails automatiques</li>
+        <li>Relances séquentielles J+2 J+5</li>
+        <li>Dashboard en temps réel</li>
+        <li>Support prioritaire</li>
+      </ul>
+      <a href="#essai" class="plan-cta primary">Essai gratuit 7 jours →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES -->
+<section class="testimonials">
+  <p class="section-label">Témoignages</p>
+  <h2 class="section-title">Ils récupèrent leur argent automatiquement</h2>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"J'avais 18% de mes abonnements qui échouaient chaque mois sans que je le sache. RecoverFlow a tout récupéré automatiquement. J'ai gagné $2,400 le premier mois."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">TM</div>
+        <div>
+          <div class="testi-name">Thomas M.</div>
+          <div class="testi-role">Fondateur SaaS — Paris</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Configuration en 4 minutes chrono. Depuis, RecoverFlow tourne seul et je reçois des notifications quand de l'argent est récupéré. C'est magique."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">SL</div>
+        <div>
+          <div class="testi-name">Sophie L.</div>
+          <div class="testi-role">E-commerce — Lyon</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Le meilleur investissement de l'année. $29/mois pour récupérer en moyenne $800 de paiements échoués. Le ROI est évident dès le premier jour."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">KD</div>
+        <div>
+          <div class="testi-name">Kevin D.</div>
+          <div class="testi-role">Agence digitale — Bruxelles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<div class="faq" id="faq">
+  <div class="faq-inner">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title">Questions fréquentes</h2>
+    <br>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Est-ce que RecoverFlow accède à mon argent Stripe ?</button>
+      <div class="faq-a">Non. RecoverFlow ne touche jamais à votre argent. Il détecte uniquement les événements d'échec de paiement et envoie des emails de relance. Votre argent reste 100% sous votre contrôle dans Stripe.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Comment connecter mon compte Stripe ?</button>
+      <div class="faq-a">Après votre inscription, vous recevez une URL webhook unique. Vous la collez dans votre dashboard Stripe en 2 clics. C'est tout — RecoverFlow est immédiatement actif.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Que se passe-t-il après les 7 jours d'essai ?</button>
+      <div class="faq-a">À la fin de l'essai gratuit, vous choisissez de passer au plan Premium à $29/mois ou d'arrêter. Aucun prélèvement automatique sans votre accord. Aucune carte bancaire requise pour l'essai.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">RecoverFlow fonctionne-t-il avec tous les pays ?</button>
+      <div class="faq-a">Oui. RecoverFlow fonctionne avec tous les pays supportés par Stripe. Si votre client est en Europe, en Amérique ou en Asie, les relances sont envoyées automatiquement.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Puis-je personnaliser les emails de relance ?</button>
+      <div class="faq-a">Les emails incluent automatiquement le nom de votre entreprise et le montant exact de la facture. Des options de personnalisation avancées sont disponibles dans le plan Premium.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA FINAL -->
+<div class="final-cta" id="essai">
+  <h2>Prêt à récupérer votre <span>argent perdu</span> ?</h2>
+  <p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p>
+  <div class="trial-form">
+    <input type="email" placeholder="votre@email.com" id="trial-email" />
+    <button onclick="submitTrial()">Commencer l'essai gratuit →</button>
+  </div>
+  <p style="font-size:13px; color:#6b7280; margin-top:12px;">7 jours gratuits • Sans carte bancaire • Annulation en 1 clic</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 RecoverFlow — Tous droits réservés</p>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q').forEach(b => b.classList.remove('open'));
+  if (!isOpen) {
+    answer.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+
+async function submitTrial() {
+  const email = document.getElementById('trial-email').value.trim();
+  const btn = document.querySelector('.trial-form button');
+  
+  if (!email || !email.includes('@')) {
+    alert('Veuillez entrer une adresse email valide.');
+    return;
+  }
+
+  btn.textContent = 'Activation en cours...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('https://recoverflow-server.onrender.com/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, company_name: 'Nouveau Marchand' })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      btn.textContent = '✅ Vérifiez votre email !';
+      document.getElementById('trial-email').value = '';
+      alert('🎉 Votre essai gratuit est activé ! Vérifiez votre email pour les instructions.');
+    } else {
+      btn.textContent = 'Commencer l\'essai gratuit →';
+      btn.disabled = false;
+      alert(data.error || 'Une erreur est survenue.');
+    }
+  } catch (err) {
+    btn.textContent = 'Commencer l\'essai gratuit →';
+    btn.disabled = false;
+    alert('Erreur réseau. Réessayez.');
+  }
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
