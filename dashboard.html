@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecoverFlow — Dashboard Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: white;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .logo { font-size: 22px; font-weight: 800; color: #635bff; }
+  .status { font-size: 13px; color: #10b981; background: #0d2e1f; padding: 6px 14px; border-radius: 100px; }
+  .login-box {
+    max-width: 400px;
+    margin: 5rem auto;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .login-box h2 { margin-bottom: 1.5rem; font-size: 20px; }
+  .login-box input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    margin-bottom: 1rem;
+    outline: none;
+  }
+  .login-box input:focus { border-color: #635bff; }
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background: #635bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn:hover { background: #4b44d4; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .card-label { font-size: 13px; color: #6b7280; margin-bottom: 8px; }
+  .card-value { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+  .card-value.green { color: #10b981; }
+  .card-value.purple { color: #635bff; }
+  .card-value.red { color: #ef4444; }
+  .card-value.yellow { color: #f59e0b; }
+  .table-wrap {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .table-title {
+    padding: 1rem 1.5rem;
+    font-size: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid #222;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge.actif { background: #0d2e1f; color: #10b981; }
+  .badge.trial { background: #1a1a2e; color: #635bff; }
+  .badge.suspendu { background: #2e0d0d; color: #ef4444; }
+  .refresh-btn {
+    padding: 8px 16px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+  }
+  .refresh-btn:hover { background: #222; }
+  .empty { padding: 2rem; text-align: center; color: #6b7280; font-size: 14px; }
+  #dashboard { display: none; }
+  #error { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div style="text-align:center; margin-bottom: 3rem;">
+    <div class="logo">RecoverFlow</div>
+    <p style="color:#6b7280; font-size:14px; margin-top:4px;">Dashboard Admin</p>
+  </div>
+  <div class="login-box">
+    <h2>🔐 Accès sécurisé</h2>
+    <input type="password" id="admin-key" placeholder="Entrez votre clé admin" />
+    <p id="error">Clé incorrecte. Accès refusé.</p>
+    <button class="btn" onclick="loadDashboard()">Accéder au dashboard →</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="header">
+    <div class="logo">RecoverFlow</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="status" id="statut">✅ Chargement...</span>
+      <button class="refresh-btn" onclick="refreshData()">↻ Actualiser</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Marchands actifs</div>
+      <div class="card-value green" id="actifs">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">En essai gratuit</div>
+      <div class="card-value purple" id="trials">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Suspendus</div>
+      <div class="card-value red" id="suspendus">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Revenu mensuel estimé</div>
+      <div class="card-value yellow" id="revenu">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Revenu annuel estimé</div>
+      <div class="card-value green" id="revenu-annuel">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Incidents traités</div>
+      <div class="card-value purple" id="incidents">—</div>
+    </div>
+  </div>
+
+  <!-- TABLE MARCHANDS -->
+  <div class="table-wrap">
+    <div class="table-title">📋 Tous les marchands</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Entreprise</th>
+          <th>Email</th>
+          <th>Statut</th>
+          <th>Fin essai</th>
+          <th>Inscrit le</th>
+        </tr>
+      </thead>
+      <tbody id="merchants-table">
+        <tr><td colspan="5" class="empty">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let savedKey = '';
+
+async function loadDashboard() {
+  const key = document.getElementById('admin-key').value.trim();
+  if (!key) return;
+  savedKey = key;
+  await fetchData(key);
+}
+
+async function refreshData() {
+  await fetchData(savedKey);
+}
+
+async function fetchData(key) {
+  document.getElementById('error').style.display = 'none';
+
+  try {
+    const res = await fetch('https://recoverflow-server.onrender.com/dashboard', {
+      headers: { 'x-admin-key': key }
+    });
+
+    if (res.status === 403) {
+      document.getElementById('error').style.display = 'block';
+      return;
+    }
+
+    const data = await res.json();
+
+    // Afficher le dashboard
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+
+    // Stats
+    document.getElementById('statut').textContent = data.statut;
+    document.getElementById('actifs').textContent = data.finances.marchands_actifs;
+    document.getElementById('trials').textContent = data.finances.marchands_en_essai;
+    document.getElementById('suspendus').textContent = data.finances.marchands_suspendus;
+    document.getElementById('revenu').textContent = data.finances.revenu_mensuel_estime;
+    document.getElementById('revenu-annuel').textContent = data.finances.revenu_annuel_estime;
+    document.getElementById('incidents').textContent = data.statistiques.total_incidents_traites;
+
+    // Table marchands
+    const tbody = document.getElementById('merchants-table');
+    if (data.marchands.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty">Aucun marchand encore.</td></tr>';
+    } else {
+      tbody.innerHTML = data.marchands.map(m => `
+        <tr>
+          <td>${m.company_name}</td>
+          <td style="color:#6b7280;">${m.email || '—'}</td>
+          <td><span class="badge ${m.subscription_status}">${m.subscription_status}</span></td>
+          <td style="color:#6b7280;">${m.trial_ends_at ? new Date(m.trial_ends_at).toLocaleDateString('fr-FR') : '—'}</td>
+          <td style="color:#6b7280;">${new Date(m.created_at).toLocaleDateString('fr-FR')}</td>
+        </tr>
+      `).join('');
+    }
+
+  } catch (err) {
+    alert('Erreur réseau. Le serveur est peut-être en train de se réveiller. Réessayez dans 30 secondes.');
+  }
+}
+
+// Permettre Enter pour se connecter
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('admin-key').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loadDashboard();
+  });
+});
+</script>
+</body>
+</html>
