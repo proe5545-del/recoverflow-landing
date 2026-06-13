@@ -925,9 +925,23 @@ async function submitTrial() {
     const data = await res.json();
 
     if (res.ok) {
-      btn.textContent = '✅ Vérifiez votre email !';
-      document.getElementById('trial-email').value = '';
-      alert('🎉 Votre essai gratuit est activé ! Vérifiez votre email pour les instructions.');
+      document.getElementById('essai').innerHTML = `
+        <div style="max-width:650px;margin:auto;text-align:left;background:#1a1a2e;border-radius:16px;padding:2rem;">
+          <h2 style="color:#635bff;margin-bottom:1rem;">✅ Votre essai est activé !</h2>
+          <p style="color:white;margin-bottom:1.5rem;">Connectez votre Stripe en 4 étapes simples :</p>
+          <div style="background:#0d0d1a;border-radius:12px;padding:1.5rem;color:#ccc;font-size:15px;line-height:2.2;">
+            <p><strong style="color:white;">Étape 1</strong> — Connectez-vous à <a href="https://dashboard.stripe.com" target="_blank" style="color:#635bff;">dashboard.stripe.com</a></p>
+            <p><strong style="color:white;">Étape 2</strong> — Allez dans <strong style="color:white;">Développeurs → Webhooks</strong></p>
+            <p><strong style="color:white;">Étape 3</strong> — Cliquez sur <strong style="color:white;">Ajouter un endpoint</strong> et collez cette URL :</p>
+            <div style="background:#635bff;color:white;padding:12px;border-radius:8px;font-family:monospace;font-size:13px;word-break:break-all;margin:8px 0;">
+              https://recoverflow-server.onrender.com/webhook
+            </div>
+            <p><strong style="color:white;">Étape 4</strong> — Sélectionnez l'événement : <strong style="color:#635bff;">invoice.payment_failed</strong> → Sauvegarder</p>
+          </div>
+          <p style="color:#10b981;font-size:14px;margin-top:1.5rem;font-weight:600;">🎉 C'est tout ! RecoverFlow surveille maintenant vos paiements automatiquement.</p>
+          <p style="color:#9ca3af;font-size:12px;margin-top:8px;">Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p>
+        </div>
+      `;
     } else {
       btn.textContent = 'Commencer l\'essai gratuit →';
       btn.disabled = false;
@@ -936,7 +950,7 @@ async function submitTrial() {
   } catch (err) {
     btn.textContent = 'Commencer l\'essai gratuit →';
     btn.disabled = false;
-    alert('Erreur réseau. Réessayez.');
+    alert('Erreur réseau. Réessayez dans quelques secondes.');
   }
 }
 
