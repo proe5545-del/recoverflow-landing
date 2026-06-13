@@ -939,7 +939,11 @@ async function submitTrial() {
             <p><strong style="color:white;">Étape 4</strong> — Sélectionnez l'événement : <strong style="color:#635bff;">invoice.payment_failed</strong> → Sauvegarder</p>
           </div>
           <p style="color:#10b981;font-size:14px;margin-top:1.5rem;font-weight:600;">🎉 C'est tout ! RecoverFlow surveille maintenant vos paiements automatiquement.</p>
-          <p style="color:#9ca3af;font-size:12px;margin-top:8px;">Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p>
+<div style="margin-top:1rem;padding:1rem;background:#0d2e1f;border-radius:8px;">
+  <p style="color:#10b981;font-size:13px;margin-bottom:8px;">📊 Votre dashboard personnel :</p>
+  <a href="${data.dashboard_url}" target="_blank" style="color:#635bff;font-size:13px;word-break:break-all;">${data.dashboard_url}</a>
+</div>
+<p style="color:#9ca3af;font-size:12px;margin-top:8px;">Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p>
         </div>
       `;
     } else {
