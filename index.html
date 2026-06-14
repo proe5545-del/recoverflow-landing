@@ -640,7 +640,7 @@ function toggleFaq(btn) {
 async function submitTrial() {
   const email = document.getElementById('trial-email').value.trim();
   const btn = document.querySelector('.trial-form button');
-  
+  const companyName = prompt('Nom de votre entreprise :') || 'Nouveau Marchand';
   if (!email || !email.includes('@')) {
     alert('Veuillez entrer une adresse email valide.');
     return;
@@ -653,7 +653,7 @@ async function submitTrial() {
     const res = await fetch('https://recoverflow-server.onrender.com/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, company_name: 'Nouveau Marchand' })
+      body: JSON.stringify({ email, company_name: companyName })
     });
 
     const data = await res.json();
