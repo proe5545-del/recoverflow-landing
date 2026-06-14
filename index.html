@@ -27,7 +27,6 @@
     line-height: 1.6;
   }
 
-  /* NAV */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -42,21 +41,10 @@
     justify-content: space-between;
   }
 
-  .logo {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--purple);
-    letter-spacing: -0.5px;
-  }
-
+  .logo { font-size: 20px; font-weight: 700; color: var(--purple); letter-spacing: -0.5px; }
   .logo span { color: var(--black); }
 
-  nav a {
-    text-decoration: none;
-    color: var(--gray);
-    font-size: 14px;
-    margin-left: 2rem;
-  }
+  nav a { text-decoration: none; color: var(--gray); font-size: 14px; margin-left: 2rem; }
 
   .nav-cta {
     background: var(--purple);
@@ -67,10 +55,8 @@
     font-size: 14px !important;
     transition: background 0.2s;
   }
-
   .nav-cta:hover { background: var(--purple-dark); }
 
-  /* HERO */
   .hero {
     padding: 140px 2rem 80px;
     text-align: center;
@@ -90,11 +76,7 @@
     font-weight: 500;
     margin-bottom: 1.5rem;
   }
-
-  .badge::before {
-    content: '✦';
-    font-size: 10px;
-  }
+  .badge::before { content: '✦'; font-size: 10px; }
 
   h1 {
     font-size: clamp(36px, 6vw, 64px);
@@ -104,11 +86,7 @@
     margin-bottom: 1.5rem;
     color: var(--black);
   }
-
-  h1 span {
-    color: var(--purple);
-    position: relative;
-  }
+  h1 span { color: var(--purple); position: relative; }
 
   .hero p {
     font-size: 20px;
@@ -139,7 +117,6 @@
     align-items: center;
     gap: 8px;
   }
-
   .btn-primary:hover {
     background: var(--purple-dark);
     transform: translateY(-1px);
@@ -157,25 +134,12 @@
     border: 1.5px solid var(--border);
     transition: all 0.2s;
   }
+  .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
 
-  .btn-secondary:hover {
-    border-color: var(--purple);
-    color: var(--purple);
-  }
-
-  .hero-note {
-    font-size: 13px;
-    color: var(--gray);
-  }
-
+  .hero-note { font-size: 13px; color: var(--gray); }
   .hero-note strong { color: var(--green); }
 
-  /* STATS */
-  .stats {
-    background: var(--black);
-    padding: 60px 2rem;
-  }
-
+  .stats { background: var(--black); padding: 60px 2rem; }
   .stats-inner {
     max-width: 900px;
     margin: 0 auto;
@@ -193,18 +157,9 @@
     line-height: 1;
     margin-bottom: 8px;
   }
+  .stat-label { font-size: 14px; color: #9ca3af; }
 
-  .stat-label {
-    font-size: 14px;
-    color: #9ca3af;
-  }
-
-  /* PROBLÈME */
-  .section {
-    padding: 80px 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+  .section { padding: 80px 2rem; max-width: 1000px; margin: 0 auto; }
 
   .section-label {
     font-size: 12px;
@@ -223,14 +178,8 @@
     margin-bottom: 1rem;
   }
 
-  .section-sub {
-    font-size: 18px;
-    color: var(--gray);
-    max-width: 560px;
-    margin-bottom: 3rem;
-  }
+  .section-sub { font-size: 18px; color: var(--gray); max-width: 560px; margin-bottom: 3rem; }
 
-  /* COMMENT ÇA MARCHE */
   .steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -260,28 +209,11 @@
     margin-bottom: 1rem;
   }
 
-  .step h3 {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
+  .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .step p { font-size: 15px; color: var(--gray); line-height: 1.6; }
 
-  .step p {
-    font-size: 15px;
-    color: var(--gray);
-    line-height: 1.6;
-  }
-
-  /* FEATURES */
-  .features {
-    background: var(--light);
-    padding: 80px 2rem;
-  }
-
-  .features-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+  .features { background: var(--light); padding: 80px 2rem; }
+  .features-inner { max-width: 1000px; margin: 0 auto; }
 
   .features-grid {
     display: grid;
@@ -297,36 +229,15 @@
     border: 1px solid var(--border);
     transition: all 0.2s;
   }
-
   .feature-card:hover {
     border-color: var(--purple);
     box-shadow: 0 4px 24px rgba(99,91,255,0.1);
   }
+  .feature-icon { font-size: 28px; margin-bottom: 1rem; }
+  .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .feature-card p { font-size: 14px; color: var(--gray); line-height: 1.6; }
 
-  .feature-icon {
-    font-size: 28px;
-    margin-bottom: 1rem;
-  }
-
-  .feature-card h3 {
-    font-size: 17px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .feature-card p {
-    font-size: 14px;
-    color: var(--gray);
-    line-height: 1.6;
-  }
-
-  /* PRICING */
-  .pricing {
-    padding: 80px 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-  }
+  .pricing { padding: 80px 2rem; max-width: 900px; margin: 0 auto; text-align: center; }
 
   .plans {
     display: grid;
@@ -336,17 +247,8 @@
     text-align: left;
   }
 
-  .plan {
-    border: 1.5px solid var(--border);
-    border-radius: 20px;
-    padding: 2rem;
-    position: relative;
-  }
-
-  .plan.featured {
-    border-color: var(--purple);
-    background: var(--purple-light);
-  }
+  .plan { border: 1.5px solid var(--border); border-radius: 20px; padding: 2rem; position: relative; }
+  .plan.featured { border-color: var(--purple); background: var(--purple-light); }
 
   .plan-badge {
     position: absolute;
@@ -362,112 +264,26 @@
     white-space: nowrap;
   }
 
-  .plan-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--gray);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-  }
+  .plan-name { font-size: 14px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .plan-price { font-size: 48px; font-weight: 800; letter-spacing: -2px; color: var(--black); line-height: 1; margin-bottom: 4px; }
+  .plan-price span { font-size: 20px; font-weight: 500; color: var(--gray); }
+  .plan-desc { font-size: 14px; color: var(--gray); margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
 
-  .plan-price {
-    font-size: 48px;
-    font-weight: 800;
-    letter-spacing: -2px;
-    color: var(--black);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
+  .plan-features { list-style: none; margin-bottom: 2rem; }
+  .plan-features li { font-size: 14px; padding: 6px 0; display: flex; align-items: center; gap: 8px; color: var(--black); }
+  .plan-features li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 13px; }
+  .plan-features li.no::before { content: '✕'; color: var(--red); }
 
-  .plan-price span {
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--gray);
-  }
+  .plan-cta { display: block; text-align: center; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.2s; }
+  .plan-cta.primary { background: var(--purple); color: white; }
+  .plan-cta.primary:hover { background: var(--purple-dark); }
+  .plan-cta.outline { border: 1.5px solid var(--border); color: var(--black); }
+  .plan-cta.outline:hover { border-color: var(--purple); color: var(--purple); }
 
-  .plan-desc {
-    font-size: 14px;
-    color: var(--gray);
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
+  .faq { background: var(--light); padding: 80px 2rem; }
+  .faq-inner { max-width: 700px; margin: 0 auto; }
 
-  .plan-features {
-    list-style: none;
-    margin-bottom: 2rem;
-  }
-
-  .plan-features li {
-    font-size: 14px;
-    padding: 6px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--black);
-  }
-
-  .plan-features li::before {
-    content: '✓';
-    color: var(--green);
-    font-weight: 700;
-    font-size: 13px;
-  }
-
-  .plan-features li.no::before {
-    content: '✕';
-    color: var(--red);
-  }
-
-  .plan-cta {
-    display: block;
-    text-align: center;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 15px;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .plan-cta.primary {
-    background: var(--purple);
-    color: white;
-  }
-
-  .plan-cta.primary:hover {
-    background: var(--purple-dark);
-  }
-
-  .plan-cta.outline {
-    border: 1.5px solid var(--border);
-    color: var(--black);
-  }
-
-  .plan-cta.outline:hover {
-    border-color: var(--purple);
-    color: var(--purple);
-  }
-
-  /* FAQ */
-  .faq {
-    background: var(--light);
-    padding: 80px 2rem;
-  }
-
-  .faq-inner {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .faq-item {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 12px;
-    overflow: hidden;
-  }
+  .faq-item { background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
 
   .faq-q {
     width: 100%;
@@ -483,34 +299,12 @@
     align-items: center;
     color: var(--black);
   }
-
-  .faq-q::after {
-    content: '+';
-    font-size: 20px;
-    color: var(--purple);
-    transition: transform 0.2s;
-  }
-
-  .faq-q.open::after {
-    transform: rotate(45deg);
-  }
-
-  .faq-a {
-    display: none;
-    padding: 0 1.5rem 1.25rem;
-    font-size: 15px;
-    color: var(--gray);
-    line-height: 1.7;
-  }
-
+  .faq-q::after { content: '+'; font-size: 20px; color: var(--purple); transition: transform 0.2s; }
+  .faq-q.open::after { transform: rotate(45deg); }
+  .faq-a { display: none; padding: 0 1.5rem 1.25rem; font-size: 15px; color: var(--gray); line-height: 1.7; }
   .faq-a.open { display: block; }
 
-  /* TÉMOIGNAGES */
-  .testimonials {
-    padding: 80px 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+  .testimonials { padding: 80px 2rem; max-width: 1000px; margin: 0 auto; }
 
   .testi-grid {
     display: grid;
@@ -519,101 +313,17 @@
     margin-top: 3rem;
   }
 
-  .testi-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.75rem;
-  }
+  .testi-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
 
-  .testi-stars {
-    color: #f59e0b;
-    font-size: 16px;
-    margin-bottom: 1rem;
-  }
-
-  .testi-text {
-    font-size: 15px;
-    color: var(--black);
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
-    font-style: italic;
-  }
-
-  .testi-author {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .testi-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--purple-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--purple);
-  }
-
-  .testi-name {
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .testi-role {
-    font-size: 12px;
-    color: var(--gray);
-  }
-
-  /* CTA FINAL */
-  .final-cta {
-    background: var(--black);
-    padding: 100px 2rem;
-    text-align: center;
-  }
-
-  .final-cta h2 {
-    font-size: clamp(32px, 5vw, 56px);
-    font-weight: 800;
-    color: white;
-    letter-spacing: -2px;
-    margin-bottom: 1rem;
-  }
-
+  .final-cta { background: var(--black); padding: 100px 2rem; text-align: center; }
+  .final-cta h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; color: white; letter-spacing: -2px; margin-bottom: 1rem; }
   .final-cta h2 span { color: var(--purple); }
+  .final-cta p { font-size: 18px; color: #9ca3af; margin-bottom: 2.5rem; }
 
-  .final-cta p {
-    font-size: 18px;
-    color: #9ca3af;
-    margin-bottom: 2.5rem;
-  }
+  footer { background: var(--black); border-top: 1px solid #1f2937; padding: 2rem; text-align: center; }
+  footer p { font-size: 13px; color: #6b7280; }
 
-  /* FOOTER */
-  footer {
-    background: var(--black);
-    border-top: 1px solid #1f2937;
-    padding: 2rem;
-    text-align: center;
-  }
-
-  footer p {
-    font-size: 13px;
-    color: #6b7280;
-  }
-
-  /* FORM */
-  .trial-form {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-  }
-
+  .trial-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
   .trial-form input {
     padding: 14px 20px;
     border-radius: 10px;
@@ -623,11 +333,7 @@
     outline: none;
     transition: border 0.2s;
   }
-
-  .trial-form input:focus {
-    border-color: var(--purple);
-  }
-
+  .trial-form input:focus { border-color: var(--purple); }
   .trial-form button {
     padding: 14px 28px;
     background: var(--purple);
@@ -639,10 +345,7 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-
-  .trial-form button:hover {
-    background: var(--purple-dark);
-  }
+  .trial-form button:hover { background: var(--purple-dark); }
 
   @media (max-width: 640px) {
     .trial-form input { width: 100%; }
@@ -679,50 +382,51 @@
 <div class="stats">
   <div class="stats-inner">
     <div>
-  <div class="stat-number">4</div>
-  <div class="stat-label">relances automatiques par paiement échoué</div>
-</div>
-<div>
-  <div class="stat-number">J+10</div>
-  <div class="stat-label">durée maximale de la séquence de relance</div>
-</div>
-<div>
-  <div class="stat-number">$0</div>
-  <div class="stat-label">à investir — fonctionne 24h/24 sans vous</div>
-</div>
-<div>
-  <div class="stat-number">5min</div>
-  <div class="stat-label">pour connecter votre Stripe et démarrer</div>
+      <div class="stat-number">4</div>
+      <div class="stat-label">relances automatiques par paiement échoué</div>
+    </div>
+    <div>
+      <div class="stat-number">J+10</div>
+      <div class="stat-label">durée maximale de la séquence de relance</div>
+    </div>
+    <div>
+      <div class="stat-number">$0</div>
+      <div class="stat-label">à investir — fonctionne 24h/24 sans vous</div>
+    </div>
+    <div>
+      <div class="stat-number">5min</div>
+      <div class="stat-label">pour connecter votre Stripe et démarrer</div>
+    </div>
+  </div>
 </div>
 
- </div>  <!-- ferme stats-inner -->
-</div>    <!-- ferme stats -->
 <!-- DÉMO INTERACTIVE -->
 <section style="padding:60px 2rem;max-width:700px;margin:0 auto;text-align:center;">
   <p class="section-label">Démo en direct</p>
   <h2 class="section-title">Voici ce qui se passe automatiquement</h2>
-  <div style="margin-top:2.5rem;display:flex;flex-direction:column;gap:0;align-items:center;" id="demo-flow">
-    <div class="demo-step" style="background:#fff5f5;border:1.5px solid #fee2e2;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+  <div style="margin-top:2.5rem;display:flex;flex-direction:column;gap:0;align-items:center;">
+    <div style="background:#fff5f5;border:1.5px solid #fee2e2;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
       <span style="font-size:20px;">❌</span> <strong>Paiement échoué</strong> — carte expirée
     </div>
     <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div class="demo-step" style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+    <div style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
       <span style="font-size:20px;">📧</span> <strong>J0</strong> — Email de relance envoyé automatiquement
     </div>
     <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div class="demo-step" style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+    <div style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
       <span style="font-size:20px;">📧</span> <strong>J+2</strong> — Rappel automatique
     </div>
     <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div class="demo-step" style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+    <div style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
       <span style="font-size:20px;">📧</span> <strong>J+5</strong> — Dernier avertissement
     </div>
     <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div class="demo-step" style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+    <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
       <span style="font-size:20px;">✅</span> <strong>Paiement récupéré</strong> — <span style="color:#10b981;font-weight:700;">+79$</span>
     </div>
   </div>
 </section>
+
 <!-- COMMENT ÇA MARCHE -->
 <section class="section" id="comment">
   <p class="section-label">Comment ça marche</p>
@@ -948,11 +652,11 @@ async function submitTrial() {
             <p><strong style="color:white;">Étape 4</strong> — Sélectionnez l'événement : <strong style="color:#635bff;">invoice.payment_failed</strong> → Sauvegarder</p>
           </div>
           <p style="color:#10b981;font-size:14px;margin-top:1.5rem;font-weight:600;">🎉 C'est tout ! RecoverFlow surveille maintenant vos paiements automatiquement.</p>
-<div style="margin-top:1rem;padding:1rem;background:#0d2e1f;border-radius:8px;">
-  <p style="color:#10b981;font-size:13px;margin-bottom:8px;">📊 Votre dashboard personnel :</p>
-  <a href="${data.dashboard_url}" target="_blank" style="color:#635bff;font-size:13px;word-break:break-all;">${data.dashboard_url}</a>
-</div>
-<p style="color:#9ca3af;font-size:12px;margin-top:8px;">Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p>
+          <div style="margin-top:1rem;padding:1rem;background:#0d2e1f;border-radius:8px;">
+            <p style="color:#10b981;font-size:13px;margin-bottom:8px;">📊 Votre dashboard personnel :</p>
+            <a href="${data.dashboard_url}" target="_blank" style="color:#635bff;font-size:13px;word-break:break-all;">${data.dashboard_url}</a>
+          </div>
+          <p style="color:#9ca3af;font-size:12px;margin-top:8px;">Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p>
         </div>
       `;
     } else {
