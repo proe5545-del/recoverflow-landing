@@ -679,24 +679,47 @@
 <div class="stats">
   <div class="stats-inner">
     <div>
-      <div class="stat-number">23%</div>
-      <div class="stat-label">des paiements échouent chaque mois en moyenne</div>
+  <div class="stat-number">4</div>
+  <div class="stat-label">relances automatiques par paiement échoué</div>
+</div>
+<div>
+  <div class="stat-number">J+10</div>
+  <div class="stat-label">durée maximale de la séquence de relance</div>
+</div>
+<div>
+  <div class="stat-number">$0</div>
+  <div class="stat-label">à investir — fonctionne 24h/24 sans vous</div>
+</div>
+<div>
+  <div class="stat-number">5min</div>
+  <div class="stat-label">pour connecter votre Stripe et démarrer</div>
+</div>
+<!-- DÉMO INTERACTIVE -->
+<section style="padding:60px 2rem;max-width:700px;margin:0 auto;text-align:center;">
+  <p class="section-label">Démo en direct</p>
+  <h2 class="section-title">Voici ce qui se passe automatiquement</h2>
+  <div style="margin-top:2.5rem;display:flex;flex-direction:column;gap:0;align-items:center;" id="demo-flow">
+    <div class="demo-step" style="background:#fff5f5;border:1.5px solid #fee2e2;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+      <span style="font-size:20px;">❌</span> <strong>Paiement échoué</strong> — carte expirée
     </div>
-    <div>
-      <div class="stat-number">72%</div>
-      <div class="stat-label">des clients paient après une relance automatique</div>
+    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
+    <div class="demo-step" style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+      <span style="font-size:20px;">📧</span> <strong>J0</strong> — Email de relance envoyé automatiquement
     </div>
-    <div>
-      <div class="stat-number">$0</div>
-      <div class="stat-label">à investir — fonctionne 24h/24 sans vous</div>
+    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
+    <div class="demo-step" style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+      <span style="font-size:20px;">📧</span> <strong>J+2</strong> — Rappel automatique
     </div>
-    <div>
-      <div class="stat-number">5min</div>
-      <div class="stat-label">pour connecter votre compte Stripe et démarrer</div>
+    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
+    <div class="demo-step" style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+      <span style="font-size:20px;">📧</span> <strong>J+5</strong> — Dernier avertissement
+    </div>
+    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
+    <div class="demo-step" style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
+      <span style="font-size:20px;">✅</span> <strong>Paiement récupéré</strong> — <span style="color:#10b981;font-weight:700;">+79$</span>
     </div>
   </div>
-</div>
-
+</section>
 <!-- COMMENT ÇA MARCHE -->
 <section class="section" id="comment">
   <p class="section-label">Comment ça marche</p>
@@ -805,43 +828,26 @@
   </div>
 </section>
 
-<!-- TÉMOIGNAGES -->
+<!-- BETA -->
 <section class="testimonials">
-  <p class="section-label">Témoignages</p>
-  <h2 class="section-title">Ils récupèrent leur argent automatiquement</h2>
+  <p class="section-label">Bêta ouverte</p>
+  <h2 class="section-title">Soyez parmi les premiers utilisateurs</h2>
+  <p class="section-sub">RecoverFlow est en bêta ouverte. Les premiers marchands bénéficient d'un tarif préférentiel à vie.</p>
   <div class="testi-grid">
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-text">"J'avais 18% de mes abonnements qui échouaient chaque mois sans que je le sache. RecoverFlow a tout récupéré automatiquement. J'ai gagné $2,400 le premier mois."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">TM</div>
-        <div>
-          <div class="testi-name">Thomas M.</div>
-          <div class="testi-role">Fondateur SaaS — Paris</div>
-        </div>
-      </div>
+    <div class="testi-card" style="text-align:center;padding:2.5rem;">
+      <div style="font-size:48px;margin-bottom:1rem;">🚀</div>
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Lancement bêta</h3>
+      <p style="color:var(--gray);font-size:15px;">Rejoignez les premiers marchands qui testent RecoverFlow et donnez votre avis pour améliorer le produit.</p>
     </div>
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-text">"Configuration en 4 minutes chrono. Depuis, RecoverFlow tourne seul et je reçois des notifications quand de l'argent est récupéré. C'est magique."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">SL</div>
-        <div>
-          <div class="testi-name">Sophie L.</div>
-          <div class="testi-role">E-commerce — Lyon</div>
-        </div>
-      </div>
+    <div class="testi-card" style="text-align:center;padding:2.5rem;">
+      <div style="font-size:48px;margin-bottom:1rem;">💰</div>
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Tarif bêta à vie</h3>
+      <p style="color:var(--gray);font-size:15px;">Les premiers utilisateurs gardent le tarif bêta de $29/mois à vie, même quand le prix augmentera.</p>
     </div>
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-text">"Le meilleur investissement de l'année. $29/mois pour récupérer en moyenne $800 de paiements échoués. Le ROI est évident dès le premier jour."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">KD</div>
-        <div>
-          <div class="testi-name">Kevin D.</div>
-          <div class="testi-role">Agence digitale — Bruxelles</div>
-        </div>
-      </div>
+    <div class="testi-card" style="text-align:center;padding:2.5rem;">
+      <div style="font-size:48px;margin-bottom:1rem;">🛡️</div>
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Sans risque</h3>
+      <p style="color:var(--gray);font-size:15px;">7 jours gratuits, sans carte bancaire. Si RecoverFlow ne récupère pas vos paiements, vous ne payez rien.</p>
     </div>
   </div>
 </section>
