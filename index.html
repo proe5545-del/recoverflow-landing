@@ -530,7 +530,7 @@
         <li>Dashboard en temps réel</li>
         <li>Support prioritaire</li>
       </ul>
-      <a href="#essai" class="plan-cta primary">Essai gratuit 7 jours →</a>
+      <a href="#" onclick="startCheckout(event)" class="plan-cta primary">Essai gratuit 7 jours →</a>
     </div>
   </div>
 </section>
@@ -605,6 +605,27 @@
 </footer>
 
 <script>
+  async function startCheckout(e) {
+  e.preventDefault();
+  const email = prompt('Entrez votre email pour commencer :');
+  if (!email || !email.includes('@')) return;
+
+  try {
+    const res = await fetch('https://recoverflow-server.onrender.com/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Erreur : ' + (data.error || 'Réessayez.'));
+    }
+  } catch (err) {
+    alert('Erreur réseau. Réessayez dans quelques secondes.');
+  }
+}
 function toggleFaq(btn) {
   const answer = btn.nextElementSibling;
   const isOpen = answer.classList.contains('open');
