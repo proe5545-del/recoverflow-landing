@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecoverFlow — Mon Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: white;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  .logo { font-size: 22px; font-weight: 800; color: #635bff; margin-bottom: 2rem; }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .badge-status {
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .badge-trial { background: #1a1a2e; color: #635bff; }
+  .badge-actif { background: #0d2e1f; color: #10b981; }
+  .badge-expired { background: #2e0d0d; color: #ef4444; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .card-label { font-size: 13px; color: #6b7280; margin-bottom: 8px; }
+  .card-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+  .green { color: #10b981; }
+  .purple { color: #635bff; }
+  .yellow { color: #f59e0b; }
+  .white { color: white; }
+
+  .table-wrap {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  .table-title {
+    padding: 1rem 1.5rem;
+    font-size: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid #222;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #1a1a1a;
+    color: #d1d5db;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  .trial-banner {
+    background: #1a1a2e;
+    border: 1px solid #635bff;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .trial-banner p { font-size: 14px; color: #a5b4fc; }
+  .trial-banner strong { color: white; }
+
+  .error-box {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+  }
+  .error-box h2 { font-size: 24px; color: #ef4444; margin-bottom: 1rem; }
+
+  .loading {
+    text-align: center;
+    padding: 4rem;
+    color: #6b7280;
+    font-size: 16px;
+  }
+
+  #content { display: none; }
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading">⏳ Chargement de votre dashboard...</div>
+<div id="error-view" class="error-box" style="display:none;">
+  <h2>❌ Accès refusé</h2>
+  <p>Token invalide ou expiré. Vérifiez votre lien d'accès.</p>
+</div>
+
+<div id="content">
+  <div class="header">
+    <div class="logo">RecoverFlow</div>
+    <span class="badge-status" id="status-badge">—</span>
+  </div>
+
+  <div class="trial-banner" id="trial-banner" style="display:none;">
+    <p>⏰ Essai gratuit actif — expire le <strong id="trial-date">—</strong></p>
+    <a href="https://proe5545-del.github.io/recoverflow-landing/#tarifs"
+       style="background:#635bff;color:white;padding:8px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">
+      Passer au Premium →
+    </a>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Échecs détectés</div>
+      <div class="card-value purple" id="stat-total">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Paiements récupérés</div>
+      <div class="card-value green" id="stat-recovered">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Taux de récupération</div>
+      <div class="card-value yellow" id="stat-rate">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Montant récupéré</div>
+      <div class="card-value green" id="stat-amount">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Relances envoyées</div>
+      <div class="card-value purple" id="stat-relances">—</div>
+    </div>
+    <div class="card">
+      <div class="card-label">ROI estimé</div>
+      <div class="card-value yellow" id="stat-roi">—</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-title">📋 Historique des incidents</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Montant</th>
+          <th>Statut</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="incidents-table">
+        <tr><td colspan="4" style="text-align:center;color:#6b7280;padding:2rem;">Aucun incident pour l'instant.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+async function loadDashboard() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+
+  if (!token) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-view').style.display = 'block';
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://recoverflow-server.onrender.com/client-dashboard?token=${token}`);
+
+    if (res.status === 403 || res.status === 400) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error-view').style.display = 'block';
+      return;
+    }
+
+    const data = await res.json();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    // Badge statut
+    const badge = document.getElementById('status-badge');
+    if (data.statut === 'trial') {
+      badge.textContent = '⏳ Essai gratuit';
+      badge.className = 'badge-status badge-trial';
+      document.getElementById('trial-banner').style.display = 'flex';
+      document.getElementById('trial-date').textContent =
+        new Date(data.essai_expire_le).toLocaleDateString('fr-FR');
+    } else if (data.statut === 'actif') {
+      badge.textContent = '✅ Actif';
+      badge.className = 'badge-status badge-actif';
+    } else {
+      badge.textContent = '❌ Expiré';
+      badge.className = 'badge-status badge-expired';
+    }
+
+    // Stats
+    const s = data.statistiques;
+    document.getElementById('stat-total').textContent = s.total_echecs_detectes;
+    document.getElementById('stat-recovered').textContent = s.paiements_recuperes;
+    document.getElementById('stat-rate').textContent = s.taux_recuperation;
+    document.getElementById('stat-amount').textContent = s.montant_recupere;
+    document.getElementById('stat-relances').textContent = s.relances_envoyees;
+    document.getElementById('stat-roi').textContent = s.roi;
+
+    // Tableau incidents
+    const tbody = document.getElementById('incidents-table');
+    if (data.incidents.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7280;padding:2rem;">Aucun incident pour l\'instant. RecoverFlow surveille vos paiements 24h/24.</td></tr>';
+    } else {
+      tbody.innerHTML = data.incidents.map(i => `
+        <tr>
+          <td>${i.client}</td>
+          <td>${i.montant}</td>
+          <td>${i.statut}</td>
+          <td style="color:#6b7280;">${i.date}</td>
+        </tr>
+      `).join('');
+    }
+
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-view').innerHTML = `
+      <h2>⚠️ Erreur réseau</h2>
+      <p>Le serveur est en train de se réveiller. Réessayez dans 30 secondes.</p>
+    `;
+    document.getElementById('error-view').style.display = 'block';
+  }
+}
+
+loadDashboard();
+</script>
+</body>
+</html>
