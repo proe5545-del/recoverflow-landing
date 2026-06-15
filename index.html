@@ -757,9 +757,10 @@ function toggleFaq(btn) {
   }
 }
 async function submitManualPayment() {
-  const nameEl = document.getElementById('manual-name');
-  const emailEl = document.getElementById('manual-email');
-  const methodEl = document.getElementById('manual-method');
+  const modal = document.querySelector('[style*="position:fixed"]');
+  const nameEl = modal ? modal.querySelector('#manual-name') : document.getElementById('manual-name');
+  const emailEl = modal ? modal.querySelector('#manual-email') : document.getElementById('manual-email');
+  const methodEl = modal ? modal.querySelector('#manual-method') : document.getElementById('manual-method');
 
   if (!nameEl || !emailEl || !methodEl) {
     alert('Erreur formulaire. Rechargez la page.');
