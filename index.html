@@ -746,49 +746,6 @@ function payManually() {
   document.body.appendChild(modal);
 }
 
-async function submitManualPayment() {
-  const name = document.getElementById('manual-name').value.trim();
-  const email = document.getElementById('manual-email').value.trim();
-  const method = document.getElementById('manual-method').value;
-  const message = document.getElementById('manual-message').value.trim();
-  
-  if (!name || !email || !method) {
-    alert('Veuillez remplir tous les champs obligatoires.');
-    return;
-  }
-
-  try {
-    const res = await fetch('https://recoverflow-server.onrender.com/manual-payment-request', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, method, message })
-    });
-    
-    const data = await res.json();
-    
-    document.querySelector('[style*="position:fixed"]')?.remove();
-    
-    const successModal = document.createElement('div');
-    successModal.style.cssText = `
-      position:fixed;top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.8);z-index:9999;
-      display:flex;align-items:center;justify-content:center;
-      padding:1rem;
-    `;
-    successModal.innerHTML = `
-      <div style="background:#111;border:1px solid #10b981;border-radius:20px;padding:2rem;max-width:400px;width:100%;text-align:center;">
-        <div style="font-size:48px;margin-bottom:1rem;">✅</div>
-        <h2 style="color:#10b981;font-size:22px;font-weight:800;margin-bottom:8px;">Demande envoyée !</h2>
-        <p style="color:#9ca3af;font-size:14px;">Nous vous contacterons à <strong style="color:white;">${email}</strong> sous 12h avec les instructions.</p>
-        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;padding:12px 24px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">Fermer</button>
-      </div>
-    `;
-    document.body.appendChild(successModal);
-    
-  } catch (err) {
-    alert('Erreur réseau. Réessayez.');
-  }
-}
 function toggleFaq(btn) {
   const answer = btn.nextElementSibling;
   const isOpen = answer.classList.contains('open');
@@ -799,7 +756,57 @@ function toggleFaq(btn) {
     btn.classList.add('open');
   }
 }
+async function submitManualPayment() {
+  const nameEl = document.getElementById('manual-name');
+  const emailEl = document.getElementById('manual-email');
+  const methodEl = document.getElementById('manual-method');
 
+  if (!nameEl || !emailEl || !methodEl) {
+    alert('Erreur formulaire. Rechargez la page.');
+    return;
+  }
+
+  const name = nameEl.value.trim();
+  const email = emailEl.value.trim();
+  const method = methodEl.value;
+
+  if (!name || !email || !method) {
+    alert('Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  try {
+    const res = await fetch('https://recoverflow-server.onrender.com/manual-payment-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, method, message: '' })
+    });
+    
+    const data = await res.json();
+    
+    document.querySelectorAll('[style*="position:fixed"]').forEach(el => el.remove());
+    
+    const successModal = document.createElement('div');
+    successModal.style.cssText = `
+      position:fixed;top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.8);z-index:99999;
+      display:flex;align-items:center;justify-content:center;
+      padding:1rem;
+    `;
+    successModal.innerHTML = `
+      <div style="background:#111;border:1px solid #10b981;border-radius:20px;padding:2rem;max-width:400px;width:100%;text-align:center;">
+        <div style="font-size:48px;margin-bottom:1rem;">✅</div>
+        <h2 style="color:#10b981;font-size:22px;font-weight:800;margin-bottom:8px;">Demande envoyée !</h2>
+        <p style="color:#9ca3af;font-size:14px;">Nous vous contacterons à <strong style="color:white;">${email}</strong> sous 12h.</p>
+        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;padding:12px 24px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">Fermer</button>
+      </div>
+    `;
+    document.body.appendChild(successModal);
+    
+  } catch (err) {
+    alert('Erreur réseau. Réessayez.');
+  }
+}
 async function submitTrial() {
   const email = document.getElementById('trial-email').value.trim();
   const btn = document.querySelector('.trial-form button');
@@ -854,11 +861,12 @@ async function submitTrial() {
     alert('Erreur réseau. Réessayez dans quelques secondes.');
   }
 }
-
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
     e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
+    const target = document.querySelector(href);
     if (target) target.scrollIntoView({ behavior: 'smooth' });
   });
 });
