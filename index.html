@@ -727,10 +727,13 @@ function payManually() {
         <input id="manual-email" type="email" placeholder="votre@email.com" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
         <input id="manual-name" type="text" placeholder="Votre nom / entreprise" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
         <select id="manual-method" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;">
-          <option value="">Méthode utilisée</option>
-          <option value="USDT">USDT Crypto</option>
-          <option value="virement">Virement bancaire Grey</option>
-        </select>
+          <option value="">Comment avez-vous payé ?</option>
+          <option value="USDT">USDT Crypto (TRC20)</option>
+          <option value="virement_usd">Virement bancaire USD</option>
+          <option value="paypal">PayPal</option>
+          <option value="wise">Wise</option>
+          <option value="autre">Autre méthode</option>
+       </select>
       </div>
       
       <button onclick="submitManualPayment()" style="width:100%;padding:14px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">
