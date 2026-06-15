@@ -267,58 +267,45 @@ async function fetchData(key) {
     alert('Erreur réseau. Le serveur est peut-être en train de se réveiller. Réessayez dans 30 secondes.');
   }
 }
-// ACTIVER UN MARCHAND MANUELLEMENT
-app.post('/admin/activate', express.json(), async (req: Request, res: Response): Promise<any> => {
-  const adminKey = String(req.headers['x-admin-key'] || '');
-  if (!secureCompare(adminKey, process.env.ADMIN_SECRET_KEY!)) {
-    return res.status(403).json({ error: 'Accès refusé.' });
-  }
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: 'Email manquant.' });
+async function activerMarchand(email) {
+  if (!confirm(`Activer le compte de ${email} ?`)) return;
   try {
-    await query(
-      `UPDATE merchants SET subscription_status = 'actif' WHERE email = $1`,
-      [email]
-    );
-    await sendEmail(
-      email,
-      '✅ Votre compte RecoverFlow Premium est activé !',
-      `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
-        <h2 style="color:#635bff;">🎉 Compte activé !</h2>
-        <p>Votre compte RecoverFlow Premium est maintenant actif.</p>
-        <p>Connectez votre Stripe webhook pour commencer à récupérer vos paiements :</p>
-        <div style="background:#635bff;color:white;padding:12px;border-radius:8px;font-family:monospace;font-size:13px;">
-          https://recoverflow-server.onrender.com/webhook
-        </div>
-        <p style="font-size:12px;color:#9ca3af;margin-top:16px;">RecoverFlow — ne pas répondre.</p>
-      </div>`
-    );
-    console.log(`✅ [ACTIVATION MANUELLE] ${email}`);
-    return res.json({ success: true });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+    const res = await fetch('https://recoverflow-server.onrender.com/admin/activate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': savedKey },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`✅ Compte activé : ${email}`);
+      refreshData();
+    } else {
+      alert('Erreur : ' + data.error);
+    }
+  } catch (err) {
+    alert('Erreur réseau.');
   }
-});
+}
 
-// SUSPENDRE UN MARCHAND MANUELLEMENT
-app.post('/admin/suspend', express.json(), async (req: Request, res: Response): Promise<any> => {
-  const adminKey = String(req.headers['x-admin-key'] || '');
-  if (!secureCompare(adminKey, process.env.ADMIN_SECRET_KEY!)) {
-    return res.status(403).json({ error: 'Accès refusé.' });
-  }
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: 'Email manquant.' });
+async function suspendresMarchand(email) {
+  if (!confirm(`Suspendre le compte de ${email} ?`)) return;
   try {
-    await query(
-      `UPDATE merchants SET subscription_status = 'suspendu' WHERE email = $1`,
-      [email]
-    );
-    console.log(`🔒 [SUSPENSION MANUELLE] ${email}`);
-    return res.json({ success: true });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+    const res = await fetch('https://recoverflow-server.onrender.com/admin/suspend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': savedKey },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert(`🔒 Compte suspendu : ${email}`);
+      refreshData();
+    } else {
+      alert('Erreur : ' + data.error);
+    }
+  } catch (err) {
+    alert('Erreur réseau.');
   }
-});
+}
 
 // Permettre Enter pour se connecter
 document.addEventListener('DOMContentLoaded', () => {
