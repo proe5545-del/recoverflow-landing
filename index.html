@@ -694,31 +694,49 @@ function payManually() {
     position:fixed;top:0;left:0;right:0;bottom:0;
     background:rgba(0,0,0,0.8);z-index:9999;
     display:flex;align-items:center;justify-content:center;
-    padding:1rem;
+    padding:1rem;overflow-y:auto;
   `;
   
   modal.innerHTML = `
-    <div style="background:#111;border:1px solid #333;border-radius:20px;padding:2rem;max-width:500px;width:100%;text-align:center;">
-      <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:8px;">Paiement manuel</h2>
-      <p style="color:#6b7280;font-size:14px;margin-bottom:1.5rem;">Remplissez le formulaire — nous vous contacterons sous 24h</p>
+    <div style="background:#111;border:1px solid #333;border-radius:20px;padding:2rem;max-width:500px;width:100%;text-align:center;margin:auto;">
+      <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:8px;">💳 Payer maintenant</h2>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:1.5rem;">Effectuez votre paiement de <strong style="color:white;">$29</strong> via l'une des méthodes ci-dessous</p>
       
-      <div style="text-align:left;display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#0d0d1a;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:left;">
+        <p style="color:#635bff;font-weight:700;margin-bottom:12px;">Option 1 — USDT Tron (TRC20)</p>
+        <div style="background:#1a1a2e;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:white;word-break:break-all;margin-bottom:8px;">
+          TUAc4BS8A97jsozzUizBfrSNHwiFufpRj1
+        </div>
+        <button onclick="navigator.clipboard.writeText('TUAc4BS8A97jsozzUizBfrSNHwiFufpRj1')" style="background:#635bff;color:white;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:12px;">📋 Copier l'adresse</button>
+        <p style="color:#9ca3af;font-size:12px;margin-top:8px;">Envoyez exactement <strong style="color:white;">29 USDT</strong> sur le réseau Tron</p>
+      </div>
+
+      <div style="background:#0d1a0d;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:left;">
+        <p style="color:#10b981;font-weight:700;margin-bottom:12px;">Option 2 — Virement bancaire (Grey)</p>
+        <div style="color:#d1d5db;font-size:13px;line-height:2;">
+          <p>🏦 <strong style="color:white;">Bank :</strong> Grey Finance</p>
+          <p>👤 <strong style="color:white;">Nom :</strong> AMOUR PROSPER ALAGBO</p>
+          <p>💳 <strong style="color:white;">Account :</strong> 216183235376</p>
+          <p>🔀 <strong style="color:white;">Routing ACH :</strong> 101019644</p>
+          <p>🏦 <strong style="color:white;">Bank :</strong> Column Bank</p>
+        </div>
+      </div>
+
+      <div style="text-align:left;display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem;">
+        <p style="color:white;font-weight:600;">Après paiement, entrez votre email :</p>
+        <input id="manual-email" type="email" placeholder="votre@email.com" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
         <input id="manual-name" type="text" placeholder="Votre nom / entreprise" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
-        <input id="manual-email" type="email" placeholder="Votre email" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
         <select id="manual-method" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;">
-          <option value="">Méthode de paiement préférée</option>
-          <option value="carte">Carte bancaire</option>
-          <option value="virement">Virement bancaire</option>
-          <option value="paypal">PayPal</option>
-          <option value="autre">Autre</option>
+          <option value="">Méthode utilisée</option>
+          <option value="USDT">USDT Crypto</option>
+          <option value="virement">Virement bancaire Grey</option>
         </select>
-        <textarea id="manual-message" placeholder="Message (optionnel)" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;height:80px;resize:none;"></textarea>
       </div>
       
-      <button onclick="submitManualPayment()" style="margin-top:1.5rem;width:100%;padding:14px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">
-        Envoyer ma demande →
+      <button onclick="submitManualPayment()" style="width:100%;padding:14px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">
+        ✅ J'ai payé — Notifier l'équipe
       </button>
-      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:8px;background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;">Annuler</button>
+      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:8px;background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;width:100%;">Annuler</button>
     </div>
   `;
   
