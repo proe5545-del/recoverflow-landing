@@ -648,10 +648,10 @@
             <span style="font-size:24px;">💳</span>
             <div>
               <div style="color:white;font-weight:700;font-size:16px;">Payer par carte / virement</div>
-              <div style="color:#10b981;font-size:12px;font-weight:600;">MANUEL — Activation sous 24h/div>
+              <div style="color:#10b981;font-size:12px;font-weight:600;">MANUEL — Activation sous 2h.</div>
             </div>
           </div>
-          <p style="color:#9ca3af;font-size:13px;margin:0;">Payez par carte bancaire, virement ou autre méthode. Notre équipe active votre compte sous 24h.</p>
+          <p style="color:#9ca3af;font-size:13px;margin:0;">Payez par carte bancaire, virement ou autre méthode. Notre équipe active votre compte sous 2h.</p>
         </div>
 
       </div>
@@ -772,10 +772,9 @@ async function submitManualPayment() {
   const method = methodEl.value;
 
   if (!name || !email || !method) {
-    alert('Veuillez remplir tous les champs obligatoires.');
+    alert('Veuillez remplir tous les champs.');
     return;
   }
-
   try {
     const res = await fetch('https://recoverflow-server.onrender.com/manual-payment-request', {
       method: 'POST',
@@ -788,17 +787,12 @@ async function submitManualPayment() {
     document.querySelectorAll('[style*="position:fixed"]').forEach(el => el.remove());
     
     const successModal = document.createElement('div');
-    successModal.style.cssText = `
-      position:fixed;top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.8);z-index:99999;
-      display:flex;align-items:center;justify-content:center;
-      padding:1rem;
-    `;
+    successModal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;`;
     successModal.innerHTML = `
       <div style="background:#111;border:1px solid #10b981;border-radius:20px;padding:2rem;max-width:400px;width:100%;text-align:center;">
         <div style="font-size:48px;margin-bottom:1rem;">✅</div>
         <h2 style="color:#10b981;font-size:22px;font-weight:800;margin-bottom:8px;">Demande envoyée !</h2>
-        <p style="color:#9ca3af;font-size:14px;">Nous vous contacterons à <strong style="color:white;">${email}</strong> sous 12h.</p>
+        <p style="color:#9ca3af;font-size:14px;">Nous vous contacterons à <strong style="color:white;">${email}</strong> sous 2h.</p>
         <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;padding:12px 24px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">Fermer</button>
       </div>
     `;
@@ -839,7 +833,7 @@ async function submitTrial() {
             <p><strong style="color:white;">Étape 2</strong> — Allez dans <strong style="color:white;">Développeurs → Webhooks</strong></p>
             <p><strong style="color:white;">Étape 3</strong> — Cliquez sur <strong style="color:white;">Ajouter un endpoint</strong> et collez cette URL :</p>
             <div style="background:#635bff;color:white;padding:12px;border-radius:8px;font-family:monospace;font-size:13px;word-break:break-all;margin:8px 0;">
-              https://recoverflow-server.onrender.com/webhook
+            ${data.webhook_url}
             </div>
             <p><strong style="color:white;">Étape 4</strong> — Sélectionnez l'événement : <strong style="color:#635bff;">invoice.payment_failed</strong> → Sauvegarder</p>
           </div>
