@@ -615,7 +615,58 @@
 <script>
   async function startCheckout(e) {
   e.preventDefault();
-  const email = prompt('Entrez votre email pour commencer :');
+  
+  // Afficher le modal de choix
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.8);z-index:9999;
+    display:flex;align-items:center;justify-content:center;
+    padding:1rem;
+  `;
+  
+  modal.innerHTML = `
+    <div style="background:#111;border:1px solid #333;border-radius:20px;padding:2rem;max-width:500px;width:100%;text-align:center;">
+      <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:8px;">Choisissez votre méthode de paiement</h2>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:2rem;">$29/mois — Essai gratuit 7 jours</p>
+      
+      <div style="display:grid;gap:12px;">
+        
+        <div onclick="payWithCrypto()" style="background:#0d0d1a;border:1.5px solid #635bff;border-radius:12px;padding:1.5rem;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.background='#1a1a3e'" onmouseout="this.style.background='#0d0d1a'">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <span style="font-size:24px;">⚡</span>
+            <div>
+              <div style="color:white;font-weight:700;font-size:16px;">Payer en USDT (Crypto)</div>
+              <div style="color:#635bff;font-size:12px;font-weight:600;">AUTOMATIQUE — Activation immédiate</div>
+            </div>
+          </div>
+          <p style="color:#9ca3af;font-size:13px;margin:0;">Paiement instantané via la blockchain Tron. Vous avez besoin d'un wallet crypto (Trust Wallet, Binance...).</p>
+        </div>
+
+        <div onclick="payManually()" style="background:#0d1a0d;border:1.5px solid #10b981;border-radius:12px;padding:1.5rem;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.background='#0d2e1f'" onmouseout="this.style.background='#0d1a0d'">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <span style="font-size:24px;">💳</span>
+            <div>
+              <div style="color:white;font-weight:700;font-size:16px;">Payer par carte / virement</div>
+              <div style="color:#10b981;font-size:12px;font-weight:600;">MANUEL — Activation sous 24h</div>
+            </div>
+          </div>
+          <p style="color:#9ca3af;font-size:13px;margin:0;">Payez par carte bancaire, virement ou autre méthode. Notre équipe active votre compte sous 24h.</p>
+        </div>
+
+      </div>
+      
+      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;">Annuler</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+async function payWithCrypto() {
+  document.querySelector('[style*="position:fixed"]')?.remove();
+  
+  const email = prompt('Entrez votre email pour activer votre compte après paiement :');
   if (!email || !email.includes('@')) return;
 
   try {
@@ -632,6 +683,89 @@
     }
   } catch (err) {
     alert('Erreur réseau. Réessayez dans quelques secondes.');
+  }
+}
+
+function payManually() {
+  document.querySelector('[style*="position:fixed"]')?.remove();
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.8);z-index:9999;
+    display:flex;align-items:center;justify-content:center;
+    padding:1rem;
+  `;
+  
+  modal.innerHTML = `
+    <div style="background:#111;border:1px solid #333;border-radius:20px;padding:2rem;max-width:500px;width:100%;text-align:center;">
+      <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:8px;">Paiement manuel</h2>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:1.5rem;">Remplissez le formulaire — nous vous contacterons sous 24h</p>
+      
+      <div style="text-align:left;display:flex;flex-direction:column;gap:12px;">
+        <input id="manual-name" type="text" placeholder="Votre nom / entreprise" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
+        <input id="manual-email" type="email" placeholder="Votre email" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
+        <select id="manual-method" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;">
+          <option value="">Méthode de paiement préférée</option>
+          <option value="carte">Carte bancaire</option>
+          <option value="virement">Virement bancaire</option>
+          <option value="paypal">PayPal</option>
+          <option value="autre">Autre</option>
+        </select>
+        <textarea id="manual-message" placeholder="Message (optionnel)" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;height:80px;resize:none;"></textarea>
+      </div>
+      
+      <button onclick="submitManualPayment()" style="margin-top:1.5rem;width:100%;padding:14px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">
+        Envoyer ma demande →
+      </button>
+      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:8px;background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;">Annuler</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+async function submitManualPayment() {
+  const name = document.getElementById('manual-name').value.trim();
+  const email = document.getElementById('manual-email').value.trim();
+  const method = document.getElementById('manual-method').value;
+  const message = document.getElementById('manual-message').value.trim();
+  
+  if (!name || !email || !method) {
+    alert('Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  try {
+    const res = await fetch('https://recoverflow-server.onrender.com/manual-payment-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, method, message })
+    });
+    
+    const data = await res.json();
+    
+    document.querySelector('[style*="position:fixed"]')?.remove();
+    
+    const successModal = document.createElement('div');
+    successModal.style.cssText = `
+      position:fixed;top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.8);z-index:9999;
+      display:flex;align-items:center;justify-content:center;
+      padding:1rem;
+    `;
+    successModal.innerHTML = `
+      <div style="background:#111;border:1px solid #10b981;border-radius:20px;padding:2rem;max-width:400px;width:100%;text-align:center;">
+        <div style="font-size:48px;margin-bottom:1rem;">✅</div>
+        <h2 style="color:#10b981;font-size:22px;font-weight:800;margin-bottom:8px;">Demande envoyée !</h2>
+        <p style="color:#9ca3af;font-size:14px;">Nous vous contacterons à <strong style="color:white;">${email}</strong> sous 12h avec les instructions.</p>
+        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;padding:12px 24px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">Fermer</button>
+      </div>
+    `;
+    document.body.appendChild(successModal);
+    
+  } catch (err) {
+    alert('Erreur réseau. Réessayez.');
   }
 }
 function toggleFaq(btn) {
