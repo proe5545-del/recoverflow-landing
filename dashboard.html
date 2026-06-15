@@ -248,21 +248,77 @@ async function fetchData(key) {
     if (data.marchands.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="empty">Aucun marchand encore.</td></tr>';
     } else {
-      tbody.innerHTML = data.marchands.map(m => `
-        <tr>
-          <td>${m.company_name}</td>
-          <td style="color:#6b7280;">${m.email || '—'}</td>
-          <td><span class="badge ${m.subscription_status}">${m.subscription_status}</span></td>
-          <td style="color:#6b7280;">${m.trial_ends_at ? new Date(m.trial_ends_at).toLocaleDateString('fr-FR') : '—'}</td>
-          <td style="color:#6b7280;">${new Date(m.created_at).toLocaleDateString('fr-FR')}</td>
-        </tr>
-      `).join('');
+     tbody.innerHTML = data.marchands.map(m => `
+  <tr>
+    <td>${m.company_name}</td>
+    <td style="color:#6b7280;">${m.email || '—'}</td>
+    <td><span class="badge ${m.subscription_status}">${m.subscription_status}</span></td>
+    <td style="color:#6b7280;">${m.trial_ends_at ? new Date(m.trial_ends_at).toLocaleDateString('fr-FR') : '—'}</td>
+    <td style="color:#6b7280;">${new Date(m.created_at).toLocaleDateString('fr-FR')}</td>
+    <td>
+      ${m.subscription_status !== 'actif' ? `<button onclick="activerMarchand('${m.email}')" style="background:#10b981;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">✅ Activer</button>` : ''}
+      ${m.subscription_status === 'actif' ? `<button onclick="suspendresMarchand('${m.email}')" style="background:#ef4444;color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">🔒 Suspendre</button>` : ''}
+    </td>
+  </tr>
+`).join('');
     }
 
   } catch (err) {
     alert('Erreur réseau. Le serveur est peut-être en train de se réveiller. Réessayez dans 30 secondes.');
   }
 }
+// ACTIVER UN MARCHAND MANUELLEMENT
+app.post('/admin/activate', express.json(), async (req: Request, res: Response): Promise<any> => {
+  const adminKey = String(req.headers['x-admin-key'] || '');
+  if (!secureCompare(adminKey, process.env.ADMIN_SECRET_KEY!)) {
+    return res.status(403).json({ error: 'Accès refusé.' });
+  }
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email manquant.' });
+  try {
+    await query(
+      `UPDATE merchants SET subscription_status = 'actif' WHERE email = $1`,
+      [email]
+    );
+    await sendEmail(
+      email,
+      '✅ Votre compte RecoverFlow Premium est activé !',
+      `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
+        <h2 style="color:#635bff;">🎉 Compte activé !</h2>
+        <p>Votre compte RecoverFlow Premium est maintenant actif.</p>
+        <p>Connectez votre Stripe webhook pour commencer à récupérer vos paiements :</p>
+        <div style="background:#635bff;color:white;padding:12px;border-radius:8px;font-family:monospace;font-size:13px;">
+          https://recoverflow-server.onrender.com/webhook
+        </div>
+        <p style="font-size:12px;color:#9ca3af;margin-top:16px;">RecoverFlow — ne pas répondre.</p>
+      </div>`
+    );
+    console.log(`✅ [ACTIVATION MANUELLE] ${email}`);
+    return res.json({ success: true });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// SUSPENDRE UN MARCHAND MANUELLEMENT
+app.post('/admin/suspend', express.json(), async (req: Request, res: Response): Promise<any> => {
+  const adminKey = String(req.headers['x-admin-key'] || '');
+  if (!secureCompare(adminKey, process.env.ADMIN_SECRET_KEY!)) {
+    return res.status(403).json({ error: 'Accès refusé.' });
+  }
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email manquant.' });
+  try {
+    await query(
+      `UPDATE merchants SET subscription_status = 'suspendu' WHERE email = $1`,
+      [email]
+    );
+    console.log(`🔒 [SUSPENSION MANUELLE] ${email}`);
+    return res.json({ success: true });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 // Permettre Enter pour se connecter
 document.addEventListener('DOMContentLoaded', () => {
