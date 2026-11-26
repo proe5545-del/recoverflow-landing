@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W28EPY3EKG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W28EPY3EKG');
+</script>
 <title>RecoverFlow — Récupérez vos paiements échoués automatiquement</title>
 <meta name="description" content="RecoverFlow détecte chaque échec de paiement Stripe et relance vos clients par email, automatiquement.">
 <meta name="theme-color" content="#07061a">
@@ -138,6 +146,50 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
 html{scroll-padding-top:84px}
 .skip{position:absolute;left:-9999px;top:8px;background:#fff;color:#4a3bd6;padding:10px 16px;border-radius:10px;font-weight:600;z-index:50}.skip:focus{left:12px}
 summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-radius:8px}
+/* inscription + paiement */
+.plan li.no{color:var(--mute)}.plan li.no::before{content:"✕";color:var(--bad)}
+.trial{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:780px;margin:0 auto}
+.trial input{flex:1 1 220px;min-width:0;padding:15px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.16);color:#fff;font:inherit;outline:none;transition:border-color .2s,background .2s}
+.trial input::placeholder{color:rgba(255,255,255,.8)}
+.trial input:focus{border-color:#fff;background:rgba(255,255,255,.26)}
+.trial button.btn{border:0;cursor:pointer;font:inherit;font-weight:600}
+.trial button.btn:disabled{opacity:.6;cursor:wait}
+.final .msg{min-height:1.4em;margin:14px 0 0;font-size:.95rem;font-weight:600;opacity:1}
+.final .done{max-width:660px;margin:0 auto;text-align:left;background:#0d0b26;border:1px solid var(--line);border-radius:22px;padding:30px;color:var(--ink)}
+.final .done h2{text-align:left;font-size:1.7rem;margin:0 0 10px;max-width:none}
+.final .done p{opacity:1;margin:0 0 12px;color:var(--mute);font-size:.95rem}
+.final .done b{color:#fff}
+.final .done a{color:#b6a8ff;word-break:break-all}
+.steps4{list-style:none;padding:0;margin:16px 0;display:grid;gap:10px}
+.steps4 li{color:var(--mute);font-size:.95rem}.steps4 li b{color:#fff}
+.code{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:12px 14px;border-radius:12px;font-family:ui-monospace,Consolas,monospace;font-size:.82rem;word-break:break-all;margin:8px 0 10px;text-align:left}
+.mini{background:var(--glass);color:#fff;border:1px solid var(--line);padding:8px 14px;border-radius:10px;cursor:pointer;font:inherit;font-size:.85rem}
+.mini:hover{border-color:var(--brand2)}
+.modal{position:fixed;inset:0;background:rgba(3,2,15,.82);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+.modal[hidden]{display:none}
+.mbox{background:#0f0d2c;border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:28px;max-width:520px;width:100%;margin:auto;text-align:left}
+.mbox h2{font-size:1.5rem;text-align:left;margin:0 0 6px;max-width:none}
+.mbox .msub{text-align:left;color:var(--mute);font-size:.95rem;margin:0 0 18px;max-width:none}.mbox .msub b{color:#fff}
+.mbox label{display:block;font-size:.85rem;color:var(--mute);margin:12px 0 6px}
+.mbox input,.mbox select{width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;font:inherit;outline:none}
+.mbox select option{color:#000}
+.mbox input:focus,.mbox select:focus{border-color:var(--brand2)}
+.opt{display:block;width:100%;text-align:left;border-radius:16px;padding:18px;margin-top:12px;cursor:pointer;color:#fff;font:inherit;background:var(--glass);border:1.5px solid var(--line);transition:border-color .2s,background .2s}
+.opt:hover{background:rgba(255,255,255,.08)}.opt:disabled{opacity:.6;cursor:wait}
+.opt.crypto{border-color:var(--brand2)}.opt.manual{border-color:var(--ok)}
+.opt b{display:block;font-size:1rem}.opt em{display:block;font-style:normal;font-size:.8rem;font-weight:600;margin:2px 0 6px}
+.opt.crypto em{color:#b6a8ff}.opt.manual em{color:var(--ok)}
+.opt span{display:block;color:var(--mute);font-size:.85rem}
+.box{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+.box h3{font-size:1rem;margin-bottom:8px}
+.box p{color:var(--mute);font-size:.85rem;margin:6px 0 0}.box p b{color:#fff}
+.box .code{background:rgba(255,255,255,.08)}
+.mact{display:flex;gap:10px;margin-top:18px}
+.mact .btn{flex:1;border:0;cursor:pointer;font:inherit;font-weight:600}
+.mact .btn:disabled{opacity:.6;cursor:wait}
+.mclose{background:none;border:0;color:var(--mute);cursor:pointer;font:inherit;margin-top:14px;padding:6px 0}
+.mclose:hover{color:#fff}
+.merr{min-height:1.2em;color:var(--bad);font-size:.9rem;margin:10px 0 0;font-weight:600}
 </style>
 <noscript><style>.rv{opacity:1;transform:none}</style></noscript>
 </head>
@@ -146,7 +198,7 @@ summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <nav><div class="wrap">
   <a class="logo" href="#">Recover<b>Flow</b></a>
-  <ul><li><a href="#comment">Comment ça marche</a></li><li><a href="#tarifs">Tarifs</a></li><li><a href="#faq">FAQ</a></li><li><a class="btn btn-primary" href="/signup" data-cta>Essai gratuit 7 jours</a></li></ul>
+  <ul><li><a href="#comment">Comment ça marche</a></li><li><a href="#tarifs">Tarifs</a></li><li><a href="#faq">FAQ</a></li><li><a class="btn btn-primary" href="#essai">Essai gratuit 7 jours</a></li></ul>
 </div></nav>
 
 <header class="hero"><div class="wrap">
@@ -154,7 +206,7 @@ summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-
     <span class="pill"><i></i>Nouveau : récupération automatique des paiements</span>
     <h1>Arrêtez de perdre de l'argent sur les <span>paiements échoués</span></h1>
     <p class="lead">RecoverFlow détecte automatiquement chaque échec de paiement Stripe et relance vos clients par email, sans que vous ayez à lever le petit doigt.</p>
-    <div class="cta"><a class="btn btn-primary" href="/signup" data-cta>Commencer l'essai gratuit →</a><a class="btn btn-ghost" href="#comment">Voir comment ça marche</a></div>
+    <div class="cta"><a class="btn btn-primary" href="#essai">Commencer l'essai gratuit →</a><a class="btn btn-ghost" href="#comment">Voir comment ça marche</a></div>
     <p class="assure"><b>7 jours gratuits</b> · Sans carte bancaire · Sans engagement</p>
   </div>
   <div class="stage" id="stage">
@@ -220,11 +272,11 @@ summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-
   <p class="sub rv">Commencez gratuitement, sans carte bancaire. Les premiers marchands gardent le tarif bêta de $29/mois à vie.</p>
   <div class="plans">
     <div class="plan rv"><h3>Gratuit</h3><div class="price">$0 <small>/ 7 jours</small></div><p>Essayez sans engagement.</p>
-      <ul><li>Connexion Stripe illimitée</li><li>Jusqu'à 50 relances</li><li>Emails automatiques</li><li>Relances séquentielles</li><li>Dashboard avancé</li><li>Support prioritaire</li></ul>
-      <a class="btn btn-ghost" href="/signup" data-cta>Commencer gratuitement</a></div>
+      <ul><li>Connexion Stripe illimitée</li><li>Jusqu'à 50 relances</li><li>Emails automatiques</li><li class="no">Relances séquentielles</li><li class="no">Dashboard avancé</li><li class="no">Support prioritaire</li></ul>
+      <a class="btn btn-ghost" href="#essai">Commencer gratuitement</a></div>
     <div class="plan pop rv"><span class="tag">Le plus populaire · Tarif bêta</span><h3>Premium</h3><div class="price">$29 <small>/ mois</small></div><p>Tout pour récupérer chaque paiement échoué.</p>
       <ul><li>Connexion Stripe illimitée</li><li>Relances illimitées</li><li>Emails automatiques</li><li>Relances séquentielles J+2, J+5</li><li>Dashboard en temps réel</li><li>Support prioritaire</li></ul>
-      <a class="btn btn-primary" href="/signup" data-cta>Essai gratuit 7 jours →</a></div>
+      <a class="btn btn-primary" href="#essai" data-premium>Passer en Premium →</a></div>
   </div>
 </div></section>
 
@@ -239,17 +291,64 @@ summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-
   </div>
 </div></section>
 
-<div class="final rv" id="essai"><h2>Prêt à récupérer votre argent perdu ?</h2><p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p><a class="btn" href="/signup" data-cta>Commencer l'essai gratuit →</a><p style="margin:22px 0 0;font-size:.9rem">7 jours gratuits · Sans carte bancaire · Sans engagement</p></div>
+<div class="final rv" id="essai"><h2>Prêt à récupérer votre argent perdu ?</h2><p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p>
+  <form class="trial" id="trial-form" novalidate>
+    <input type="text" id="trial-company" placeholder="Nom de votre entreprise" autocomplete="organization" aria-label="Nom de votre entreprise">
+    <input type="email" id="trial-email" placeholder="votre@email.com" autocomplete="email" aria-label="Votre email">
+    <button class="btn" type="submit" id="trial-btn">Commencer l'essai gratuit →</button>
+  </form>
+  <p class="msg" id="trial-msg" role="alert"></p>
+  <p style="margin:6px 0 0;font-size:.9rem">7 jours gratuits · Sans carte bancaire · Sans engagement</p></div>
 <footer>© 2026 RecoverFlow. Tous droits réservés.</footer>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="mbox">
+    <div id="v-choose">
+      <h2 id="m-title">Passer en Premium</h2>
+      <p class="msub">29 $ / mois · choisissez comment payer</p>
+      <label for="m-email">Votre email (pour activer votre compte)</label>
+      <input id="m-email" type="email" placeholder="votre@email.com" autocomplete="email">
+      <button class="opt crypto" type="button" id="pay-crypto"><b>⚡ Payer en USDT (crypto)</b><em>Automatique · activation immédiate</em><span>Paiement instantané via la blockchain Tron. Il faut un wallet crypto (Trust Wallet, Binance…).</span></button>
+      <button class="opt manual" type="button" id="pay-manual"><b>💳 Payer par carte ou virement</b><em>Manuel · activation sous 2 h</em><span>Carte, virement ou autre méthode. Notre équipe active votre compte sous 2 h.</span></button>
+      <p class="merr" id="e-choose" role="alert"></p>
+      <button class="mclose" type="button" data-close>Annuler</button>
+    </div>
+
+    <div id="v-manual" hidden>
+      <h2>💳 Payer maintenant</h2>
+      <p class="msub">Envoyez <b>29 $</b> avec l'une des méthodes ci-dessous, puis prévenez-nous.</p>
+      <div class="box"><h3>Option 1 · USDT sur Tron (TRC20)</h3>
+        <div class="code" id="usdt">TUAc4BS8A97jsozzUizBfrSNHwiFufpRj1</div>
+        <button class="mini" type="button" data-copy="usdt">Copier l'adresse</button>
+        <p>Envoyez exactement <b>29 USDT</b> sur le réseau Tron.</p></div>
+      <div class="box"><h3>Option 2 · Virement bancaire (Grey)</h3>
+        <p>Banque : <b>Grey Finance</b> (Column Bank)</p>
+        <p>Nom : <b>AMOUR PROSPER ALAGBO</b></p>
+        <p>Account : <b>216183235376</b></p>
+        <p>Routing ACH : <b>101019644</b></p></div>
+      <form id="manual-form" novalidate>
+        <label for="mm-email">Après paiement, votre email</label>
+        <input id="mm-email" type="email" placeholder="votre@email.com" autocomplete="email">
+        <label for="mm-name">Votre nom / entreprise</label>
+        <input id="mm-name" type="text" placeholder="Votre nom ou entreprise" autocomplete="organization">
+        <label for="mm-method">Comment avez-vous payé ?</label>
+        <select id="mm-method"><option value="">Choisir…</option><option value="USDT">USDT Crypto (TRC20)</option><option value="virement_usd">Virement bancaire USD</option><option value="paypal">PayPal</option><option value="wise">Wise</option><option value="autre">Autre méthode</option></select>
+        <p class="merr" id="e-manual" role="alert"></p>
+        <div class="mact"><button class="btn btn-primary" type="submit" id="manual-btn">✅ J'ai payé · prévenir l'équipe</button></div>
+      </form>
+      <button class="mclose" type="button" id="back-choose">← Retour</button>
+    </div>
+
+    <div id="v-ok" hidden>
+      <h2>✅ Demande envoyée</h2>
+      <p class="msub">Nous vous contacterons à <b id="ok-email"></b> sous 2 h.</p>
+      <div class="mact"><button class="btn btn-primary" type="button" data-close>Fermer</button></div>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
-  /* ====== CONFIG : change seulement cette ligne ======
-     '/signup' marche si la page est servie par ton backend Express (même domaine).
-     Sinon mets l'URL complète, ex : 'https://ton-app.onrender.com/signup' */
-  var SIGNUP_URL='/signup';
-  document.querySelectorAll('[data-cta]').forEach(function(a){a.setAttribute('href',SIGNUP_URL)});
-
   var rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* marquee */
   var items=['Détection en temps réel','Relances J0 · J+2 · J+5','Webhooks Stripe sécurisés','Emails professionnels','Dashboard en temps réel','Zéro maintenance','Tous pays supportés par Stripe'];
@@ -282,6 +381,101 @@ summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-
     st.addEventListener('mouseleave',function(){dash.style.transform=''});
     document.addEventListener('mousemove',function(e){var c=e.target.closest&&e.target.closest('.card');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')});
   }
+})();
+</script>
+
+<script>
+(function(){
+  var API='https://recoverflow-server.onrender.com';
+  var $=function(id){return document.getElementById(id)};
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function okEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+  function isUrl(v){return /^https?:\/\//i.test(v||'')}
+  function post(path,body){
+    return fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json().catch(function(){return {}}).then(function(d){return {ok:r.ok,data:d||{}}})});
+  }
+  function fail(e,fallback){return e instanceof TypeError?'Erreur réseau. Réessayez dans quelques secondes.':(e&&e.message)||fallback||'Une erreur est survenue.'}
+
+  /* ---------- Essai gratuit ---------- */
+  function showDone(d){
+    var hook=isUrl(d.webhook_url)?d.webhook_url:'';
+    var dash=isUrl(d.dashboard_url)?d.dashboard_url:'';
+    $('essai').innerHTML='<div class="done">'+
+      '<h2>✅ Votre essai est activé</h2>'+
+      '<p>Connectez votre Stripe en 4 étapes :</p>'+
+      '<ul class="steps4">'+
+        '<li><b>Étape 1</b> · Connectez-vous à <a href="https://dashboard.stripe.com" target="_blank" rel="noopener">dashboard.stripe.com</a></li>'+
+        '<li><b>Étape 2</b> · Allez dans <b>Développeurs → Webhooks</b></li>'+
+        '<li><b>Étape 3</b> · Cliquez sur <b>Ajouter un endpoint</b> et collez cette URL :'+
+          (hook?'<div class="code" id="hook">'+esc(hook)+'</div><button class="mini" type="button" data-copy="hook">Copier l’URL</button>':'<div class="code">URL indisponible, contactez-nous.</div>')+
+        '</li>'+
+        '<li><b>Étape 4</b> · Sélectionnez l’événement <b>invoice.payment_failed</b>, puis sauvegardez.</li>'+
+      '</ul>'+
+      '<p style="color:var(--ok);font-weight:600">🎉 C’est tout. RecoverFlow surveille maintenant vos paiements automatiquement.</p>'+
+      (dash?'<p>📊 Votre dashboard personnel :<br><a href="'+esc(dash)+'" target="_blank" rel="noopener">'+esc(dash)+'</a></p>':'')+
+      '<p>Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p></div>';
+    $('essai').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  var tf=$('trial-form');
+  if(tf)tf.addEventListener('submit',function(e){
+    e.preventDefault();
+    var company=$('trial-company').value.trim(),email=$('trial-email').value.trim(),msg=$('trial-msg'),btn=$('trial-btn');
+    if(!company){msg.textContent='Entrez le nom de votre entreprise.';$('trial-company').focus();return}
+    if(!okEmail(email)){msg.textContent='Entrez une adresse email valide.';$('trial-email').focus();return}
+    btn.disabled=true;btn.textContent='Activation en cours…';
+    msg.textContent='Un instant : la première fois, le serveur peut mettre jusqu’à 30 s à répondre.';
+    post('/register',{email:email,company_name:company}).then(function(r){
+      if(!r.ok)throw new Error(r.data.error||'Une erreur est survenue.');
+      showDone(r.data);
+    }).catch(function(err){
+      btn.disabled=false;btn.textContent='Commencer l’essai gratuit →';msg.textContent=fail(err);
+    });
+  });
+
+  /* ---------- Premium : choix du paiement ---------- */
+  var modal=$('modal');
+  function view(v){['v-choose','v-manual','v-ok'].forEach(function(id){$(id).hidden=(id!==v)})}
+  function openModal(){view('v-choose');$('e-choose').textContent='';modal.hidden=false;document.body.style.overflow='hidden';$('m-email').focus()}
+  function closeModal(){modal.hidden=true;document.body.style.overflow=''}
+  document.querySelectorAll('[data-premium]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();openModal()})});
+  modal.addEventListener('click',function(e){if(e.target===modal||(e.target.hasAttribute&&e.target.hasAttribute('data-close')))closeModal()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)closeModal()});
+
+  $('pay-crypto').addEventListener('click',function(){
+    var email=$('m-email').value.trim(),err=$('e-choose'),btn=this;
+    if(!okEmail(email)){err.textContent='Entrez une adresse email valide pour activer votre compte.';$('m-email').focus();return}
+    err.textContent='';btn.disabled=true;
+    post('/create-checkout-session',{email:email}).then(function(r){
+      if(/^https:\/\//i.test(r.data.url||'')){window.location.href=r.data.url;return}
+      throw new Error(r.data.error||'Réessayez dans un instant.');
+    }).catch(function(e2){btn.disabled=false;err.textContent=fail(e2)});
+  });
+  $('pay-manual').addEventListener('click',function(){
+    $('mm-email').value=$('m-email').value.trim();$('e-manual').textContent='';view('v-manual');
+  });
+  $('back-choose').addEventListener('click',function(){view('v-choose')});
+
+  $('manual-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=$('mm-name').value.trim(),email=$('mm-email').value.trim(),method=$('mm-method').value,err=$('e-manual'),btn=$('manual-btn');
+    if(!okEmail(email)||!name||!method){err.textContent='Remplissez tous les champs avec un email valide.';return}
+    err.textContent='';btn.disabled=true;
+    post('/manual-payment-request',{name:name,email:email,method:method,message:''}).then(function(r){
+      if(!r.ok)throw new Error(r.data.error||'Une erreur est survenue.');
+      $('ok-email').textContent=email;view('v-ok');
+    }).catch(function(e2){err.textContent=fail(e2)}).then(function(){btn.disabled=false});
+  });
+
+  /* ---------- Boutons "Copier" ---------- */
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-copy]');if(!b)return;
+    var t=$(b.getAttribute('data-copy'));if(!t)return;
+    var old=b.textContent;
+    (navigator.clipboard?navigator.clipboard.writeText(t.textContent.trim()):Promise.reject())
+      .then(function(){b.textContent='Copié ✓'}).catch(function(){b.textContent='Copie impossible'});
+    setTimeout(function(){b.textContent=old},1600);
+  });
 })();
 </script>
 </body>
