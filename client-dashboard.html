@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
 <title>RecoverFlow — Mon Dashboard</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,6 +22,7 @@
     justify-content: space-between;
     margin-bottom: 2rem;
   }
+  .header .logo { margin-bottom: 0; }
   .badge-status {
     font-size: 13px;
     padding: 6px 14px;
@@ -53,7 +56,7 @@
     background: #111;
     border: 1px solid #222;
     border-radius: 14px;
-    overflow: hidden;
+    overflow-x: auto;
     margin-top: 2rem;
   }
   .table-title {
@@ -77,8 +80,10 @@
     font-size: 14px;
     border-bottom: 1px solid #1a1a1a;
     color: #d1d5db;
+    word-break: break-word;
   }
   tr:last-child td { border-bottom: none; }
+  .empty { text-align: center; color: #6b7280; padding: 2rem; }
 
   .trial-banner {
     background: #1a1a2e;
@@ -94,6 +99,15 @@
   }
   .trial-banner p { font-size: 14px; color: #a5b4fc; }
   .trial-banner strong { color: white; }
+  .trial-banner a {
+    background: #635bff;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
 
   .error-box {
     text-align: center;
@@ -109,15 +123,17 @@
     font-size: 16px;
   }
 
+  #error-view { display: none; }
+  #trial-banner { display: none; }
   #content { display: none; }
 </style>
 </head>
 <body>
 
 <div id="loading" class="loading">⏳ Chargement de votre dashboard...</div>
-<div id="error-view" class="error-box" style="display:none;">
-  <h2>❌ Accès refusé</h2>
-  <p>Token invalide ou expiré. Vérifiez votre lien d'accès.</p>
+<div id="error-view" class="error-box">
+  <h2 id="error-title">❌ Accès refusé</h2>
+  <p id="error-text">Token invalide ou expiré. Vérifiez votre lien d'accès.</p>
 </div>
 
 <div id="content">
@@ -126,12 +142,9 @@
     <span class="badge-status" id="status-badge">—</span>
   </div>
 
-  <div class="trial-banner" id="trial-banner" style="display:none;">
+  <div class="trial-banner" id="trial-banner">
     <p>⏰ Essai gratuit actif — expire le <strong id="trial-date">—</strong></p>
-    <a href="https://proe5545-del.github.io/recoverflow-landing/#tarifs"
-       style="background:#635bff;color:white;padding:8px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">
-      Passer au Premium →
-    </a>
+    <a href="https://proe5545-del.github.io/recoverflow-landing/#tarifs">Passer au Premium →</a>
   </div>
 
   <div class="grid">
@@ -173,45 +186,65 @@
         </tr>
       </thead>
       <tbody id="incidents-table">
-        <tr><td colspan="4" style="text-align:center;color:#6b7280;padding:2rem;">Aucun incident pour l'instant.</td></tr>
+        <tr><td colspan="4" class="empty">Aucun incident pour l'instant.</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 <script>
+const API = 'https://recoverflow-server.onrender.com';
+const $ = (id) => document.getElementById(id);
+
+/* Les infos des incidents (nom du client, etc.) viennent de Stripe, donc de personnes
+   extérieures : on les échappe AVANT de les insérer dans la page. */
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function showError(title, text) {
+  $('loading').style.display = 'none';
+  $('content').style.display = 'none';
+  $('error-title').textContent = title;
+  $('error-text').textContent = text;
+  $('error-view').style.display = 'block';
+}
+
 async function loadDashboard() {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+  const token = new URLSearchParams(window.location.search).get('token');
 
   if (!token) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('error-view').style.display = 'block';
+    showError('❌ Accès refusé', 'Token invalide ou expiré. Vérifiez votre lien d\'accès.');
     return;
   }
 
   try {
-    const res = await fetch(`https://recoverflow-server.onrender.com/client-dashboard?token=${token}`);
+    const res = await fetch(API + '/client-dashboard?token=' + encodeURIComponent(token));
 
-    if (res.status === 403 || res.status === 400) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error-view').style.display = 'block';
+    if (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 404) {
+      showError('❌ Accès refusé', 'Token invalide ou expiré. Vérifiez votre lien d\'accès.');
+      return;
+    }
+    if (!res.ok) {
+      showError('⚠️ Erreur serveur', 'Réessayez dans un instant (code ' + res.status + ').');
       return;
     }
 
     const data = await res.json();
 
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
+    $('loading').style.display = 'none';
+    $('content').style.display = 'block';
 
     // Badge statut
-    const badge = document.getElementById('status-badge');
+    const badge = $('status-badge');
     if (data.statut === 'trial') {
       badge.textContent = '⏳ Essai gratuit';
       badge.className = 'badge-status badge-trial';
-      document.getElementById('trial-banner').style.display = 'flex';
-      document.getElementById('trial-date').textContent =
-        new Date(data.essai_expire_le).toLocaleDateString('fr-FR');
+      $('trial-banner').style.display = 'flex';
+      const d = new Date(data.essai_expire_le);
+      $('trial-date').textContent = isNaN(d) ? '—' : d.toLocaleDateString('fr-FR');
     } else if (data.statut === 'actif') {
       badge.textContent = '✅ Actif';
       badge.className = 'badge-status badge-actif';
@@ -220,37 +253,33 @@ async function loadDashboard() {
       badge.className = 'badge-status badge-expired';
     }
 
-    // Stats
-    const s = data.statistiques;
-    document.getElementById('stat-total').textContent = s.total_echecs_detectes;
-    document.getElementById('stat-recovered').textContent = s.paiements_recuperes;
-    document.getElementById('stat-rate').textContent = s.taux_recuperation;
-    document.getElementById('stat-amount').textContent = s.montant_recupere;
-    document.getElementById('stat-relances').textContent = s.relances_envoyees;
-    document.getElementById('stat-roi').textContent = s.roi;
+    // Stats (textContent : sûr)
+    const s = data.statistiques || {};
+    $('stat-total').textContent = s.total_echecs_detectes ?? '—';
+    $('stat-recovered').textContent = s.paiements_recuperes ?? '—';
+    $('stat-rate').textContent = s.taux_recuperation ?? '—';
+    $('stat-amount').textContent = s.montant_recupere ?? '—';
+    $('stat-relances').textContent = s.relances_envoyees ?? '—';
+    $('stat-roi').textContent = s.roi ?? '—';
 
     // Tableau incidents
-    const tbody = document.getElementById('incidents-table');
-    if (data.incidents.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7280;padding:2rem;">Aucun incident pour l\'instant. RecoverFlow surveille vos paiements 24h/24.</td></tr>';
+    const incidents = Array.isArray(data.incidents) ? data.incidents : [];
+    const tbody = $('incidents-table');
+    if (incidents.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty">Aucun incident pour l\'instant. RecoverFlow surveille vos paiements 24h/24.</td></tr>';
     } else {
-      tbody.innerHTML = data.incidents.map(i => `
+      tbody.innerHTML = incidents.map((i) => `
         <tr>
-          <td>${i.client}</td>
-          <td>${i.montant}</td>
-          <td>${i.statut}</td>
-          <td style="color:#6b7280;">${i.date}</td>
+          <td>${esc(i.client)}</td>
+          <td>${esc(i.montant)}</td>
+          <td>${esc(i.statut)}</td>
+          <td style="color:#6b7280;">${esc(i.date)}</td>
         </tr>
       `).join('');
     }
 
   } catch (err) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('error-view').innerHTML = `
-      <h2>⚠️ Erreur réseau</h2>
-      <p>Le serveur est en train de se réveiller. Réessayez dans 30 secondes.</p>
-    `;
-    document.getElementById('error-view').style.display = 'block';
+    showError('⚠️ Erreur réseau', 'Le serveur est en train de se réveiller. Réessayez dans 30 secondes.');
   }
 }
 
