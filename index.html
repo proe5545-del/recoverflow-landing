@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RecoverFlow — Récupérez vos paiements échoués automatiquement</title>
 <meta name="description" content="RecoverFlow détecte chaque échec de paiement Stripe et relance vos clients par email, automatiquement.">
+<meta name="theme-color" content="#07061a">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E💸%3C/text%3E%3C/svg%3E">
 <meta property="og:title" content="RecoverFlow — Récupérez vos paiements échoués automatiquement">
 <meta property="og:description" content="Détection Stripe en temps réel, relances J0 / J+2 / J+5, 7 jours gratuits sans carte bancaire.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -131,13 +134,19 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
 .rv{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s}.rv.in{opacity:1;transform:none}
 @media(max-width:920px){.hero .wrap,.g3,.g4,.plans{grid-template-columns:1fr}.stats .wrap{grid-template-columns:1fr 1fr}nav ul li:not(:last-child){display:none}.hero{padding-top:44px}.chip.a{left:0}.chip.b{right:0}.tl{grid-template-columns:1fr;gap:26px}.tl::before,.tl::after{display:none}.big{font-size:2.5rem}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.line{stroke-dashoffset:0}.area{opacity:1}.tl::after{width:80%}}
+/* accessibilité + confort */
+html{scroll-padding-top:84px}
+.skip{position:absolute;left:-9999px;top:8px;background:#fff;color:#4a3bd6;padding:10px 16px;border-radius:10px;font-weight:600;z-index:50}.skip:focus{left:12px}
+summary:focus-visible{outline:3px solid var(--brand2);outline-offset:3px;border-radius:8px}
 </style>
+<noscript><style>.rv{opacity:1;transform:none}</style></noscript>
 </head>
 <body>
+<a class="skip" href="#comment">Aller au contenu</a>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <nav><div class="wrap">
   <a class="logo" href="#">Recover<b>Flow</b></a>
-  <ul><li><a href="#comment">Comment ça marche</a></li><li><a href="#tarifs">Tarifs</a></li><li><a href="#faq">FAQ</a></li><li><a class="btn btn-primary" href="#essai">Essai gratuit 7 jours</a></li></ul>
+  <ul><li><a href="#comment">Comment ça marche</a></li><li><a href="#tarifs">Tarifs</a></li><li><a href="#faq">FAQ</a></li><li><a class="btn btn-primary" href="/signup" data-cta>Essai gratuit 7 jours</a></li></ul>
 </div></nav>
 
 <header class="hero"><div class="wrap">
@@ -145,13 +154,13 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
     <span class="pill"><i></i>Nouveau : récupération automatique des paiements</span>
     <h1>Arrêtez de perdre de l'argent sur les <span>paiements échoués</span></h1>
     <p class="lead">RecoverFlow détecte automatiquement chaque échec de paiement Stripe et relance vos clients par email, sans que vous ayez à lever le petit doigt.</p>
-    <div class="cta"><a class="btn btn-primary" href="#essai">Commencer l'essai gratuit →</a><a class="btn btn-ghost" href="#comment">Voir comment ça marche</a></div>
-    <p class="assure"><b>7 jours gratuits</b> · Sans carte bancaire · Annulation à tout moment</p>
+    <div class="cta"><a class="btn btn-primary" href="/signup" data-cta>Commencer l'essai gratuit →</a><a class="btn btn-ghost" href="#comment">Voir comment ça marche</a></div>
+    <p class="assure"><b>7 jours gratuits</b> · Sans carte bancaire · Sans engagement</p>
   </div>
   <div class="stage" id="stage">
-    <div class="chip a">❌ Paiement échoué : carte expirée</div>
-    <div class="chip b">📧 Relance J0 envoyée</div>
-    <div class="chip c">✅ Paiement récupéré +79 $</div>
+    <div class="chip a" aria-hidden="true">❌ Paiement échoué : carte expirée</div>
+    <div class="chip b" aria-hidden="true">📧 Relance J0 envoyée</div>
+    <div class="chip c" aria-hidden="true">✅ Paiement récupéré +79 $</div>
     <div class="dash" id="dash" aria-label="Aperçu du dashboard (démo)">
       <div class="dh"><span>Revenus récupérés · démo</span><em>En direct</em></div>
       <div class="big"><span id="rev">0</span> $<small>▲ 100% auto</small></div>
@@ -212,10 +221,10 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
   <div class="plans">
     <div class="plan rv"><h3>Gratuit</h3><div class="price">$0 <small>/ 7 jours</small></div><p>Essayez sans engagement.</p>
       <ul><li>Connexion Stripe illimitée</li><li>Jusqu'à 50 relances</li><li>Emails automatiques</li><li>Relances séquentielles</li><li>Dashboard avancé</li><li>Support prioritaire</li></ul>
-      <a class="btn btn-ghost" href="#essai">Commencer gratuitement</a></div>
+      <a class="btn btn-ghost" href="/signup" data-cta>Commencer gratuitement</a></div>
     <div class="plan pop rv"><span class="tag">Le plus populaire · Tarif bêta</span><h3>Premium</h3><div class="price">$29 <small>/ mois</small></div><p>Tout pour récupérer chaque paiement échoué.</p>
       <ul><li>Connexion Stripe illimitée</li><li>Relances illimitées</li><li>Emails automatiques</li><li>Relances séquentielles J+2, J+5</li><li>Dashboard en temps réel</li><li>Support prioritaire</li></ul>
-      <a class="btn btn-primary" href="#essai">Essai gratuit 7 jours →</a></div>
+      <a class="btn btn-primary" href="/signup" data-cta>Essai gratuit 7 jours →</a></div>
   </div>
 </div></section>
 
@@ -230,11 +239,17 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
   </div>
 </div></section>
 
-<div class="final rv" id="essai"><h2>Prêt à récupérer votre argent perdu ?</h2><p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p><a class="btn" href="#">Commencer l'essai gratuit →</a><p style="margin:22px 0 0;font-size:.9rem">7 jours gratuits · Sans carte bancaire · Annulation en 1 clic</p></div>
+<div class="final rv" id="essai"><h2>Prêt à récupérer votre argent perdu ?</h2><p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p><a class="btn" href="/signup" data-cta>Commencer l'essai gratuit →</a><p style="margin:22px 0 0;font-size:.9rem">7 jours gratuits · Sans carte bancaire · Sans engagement</p></div>
 <footer>© 2026 RecoverFlow. Tous droits réservés.</footer>
 
 <script>
 (function(){
+  /* ====== CONFIG : change seulement cette ligne ======
+     '/signup' marche si la page est servie par ton backend Express (même domaine).
+     Sinon mets l'URL complète, ex : 'https://ton-app.onrender.com/signup' */
+  var SIGNUP_URL='/signup';
+  document.querySelectorAll('[data-cta]').forEach(function(a){a.setAttribute('href',SIGNUP_URL)});
+
   var rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
   /* marquee */
   var items=['Détection en temps réel','Relances J0 · J+2 · J+5','Webhooks Stripe sécurisés','Emails professionnels','Dashboard en temps réel','Zéro maintenance','Tous pays supportés par Stripe'];
@@ -243,11 +258,12 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
   function count(el){var to=+el.dataset.count,t0=null;if(rm||!to){el.textContent=to;return}
     (function f(t){if(!t0)t0=t;var p=Math.min((t-t0)/1400,1);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(performance.now())}
   /* reveal */
+  if(!('IntersectionObserver' in window)){document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in')});document.querySelectorAll('[data-count]').forEach(function(e){e.textContent=e.dataset.count});var tl0=document.getElementById('tl');if(tl0)tl0.classList.add('go')}
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;
     e.target.classList.add('in');e.target.querySelectorAll('[data-count]').forEach(count);io.unobserve(e.target)})},{threshold:.2});
   document.querySelectorAll('.rv').forEach(function(el,i){el.style.transitionDelay=(i%4)*90+'ms';io.observe(el)});
   var tl=document.getElementById('tl');
-  new IntersectionObserver(function(es,o){if(es[0].isIntersecting){tl.classList.add('go');o.disconnect()}},{threshold:.5}).observe(tl);
+  if(tl)new IntersectionObserver(function(es,o){if(es[0].isIntersecting){tl.classList.add('go');o.disconnect()}},{threshold:.5}).observe(tl);
   /* dashboard feed + revenue */
   var feed=document.getElementById('feed'),rev=document.getElementById('rev'),total=0,k=0;
   var ev=[['bad','❌','Paiement échoué','Carte expirée','','79 $'],['mail','📧','Relance J0 envoyée','Automatiquement','',''],['mail','📧','Rappel J+2','Automatique','',''],['ok','✅','Paiement récupéré','Carte mise à jour','ok','+79 $'],['bad','❌','Paiement échoué','Fonds insuffisants','','29 $'],['mail','📧','Relance J0 envoyée','Automatiquement','',''],['ok','✅','Paiement récupéré','Lien de paiement direct','ok','+29 $']];
@@ -257,10 +273,11 @@ footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
     d.innerHTML='<div class="ic '+e[0]+'">'+e[1]+'</div><div><b>'+e[2]+'</b><span>'+e[3]+'</span></div><div class="amt '+e[4]+'">'+e[5]+'</div>';
     feed.prepend(d);while(feed.children.length>3)feed.lastChild.remove();
     if(e[4]==='ok')bump(total+parseInt(e[5].replace(/\D/g,''),10)*12)}
-  push();setInterval(push,2200);
+  push();var timer=setInterval(push,2200);
+  document.addEventListener('visibilitychange',function(){clearInterval(timer);if(!document.hidden)timer=setInterval(push,2200)});
   /* 3D tilt */
   var st=document.getElementById('stage'),dash=document.getElementById('dash');
-  if(!rm&&matchMedia('(hover:hover)').matches){
+  if(st&&dash&&!rm&&matchMedia('(hover:hover)').matches){
     st.addEventListener('mousemove',function(e){var r=st.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;dash.style.transform='rotateY('+x*14+'deg) rotateX('+-y*12+'deg)'});
     st.addEventListener('mouseleave',function(){dash.style.transform=''});
     document.addEventListener('mousemove',function(e){var c=e.target.closest&&e.target.closest('.card');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')});
