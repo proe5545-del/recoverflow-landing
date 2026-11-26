@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
 <title>RecoverFlow — Paiement confirmé !</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -98,7 +100,7 @@
     <h3>⚡ Connexion Stripe en 3 minutes</h3>
     <div class="step-item">
       <div class="step-num">1</div>
-      <div>Connectez-vous à <a href="https://dashboard.stripe.com" target="_blank" style="color:#635bff;">dashboard.stripe.com</a> → <strong style="color:white;">Développeurs → Webhooks</strong></div>
+      <div>Connectez-vous à <a href="https://dashboard.stripe.com" target="_blank" rel="noopener" style="color:#635bff;">dashboard.stripe.com</a> → <strong style="color:white;">Développeurs → Webhooks</strong></div>
     </div>
     <div class="step-item">
       <div class="step-num">2</div>
@@ -112,13 +114,13 @@
     </div>
   </div>
 
-  <a href="https://dashboard.stripe.com/webhooks" target="_blank" class="btn">
+  <a href="https://dashboard.stripe.com/webhooks" target="_blank" rel="noopener" class="btn">
     Configurer mon Stripe maintenant →
   </a>
 
   <div id="dashboard-link">
     <p class="note">Votre dashboard personnel :</p>
-    <a id="dashboard-url" href="#" target="_blank">Accéder à mon dashboard →</a>
+    <a id="dashboard-url" href="#" target="_blank" rel="noopener">Accéder à mon dashboard →</a>
   </div>
 
   <p class="note">Un email de confirmation a été envoyé avec toutes les instructions.</p>
@@ -131,11 +133,12 @@ const sessionId = params.get('session_id');
 
 if (sessionId) {
   // Optionnel : afficher un lien dashboard si on a le token en localStorage
-  const token = localStorage.getItem('rf_token');
+  let token = null;
+  try { token = localStorage.getItem('rf_token'); } catch (e) {}
   if (token) {
     document.getElementById('dashboard-link').style.display = 'block';
     document.getElementById('dashboard-url').href =
-      `https://proe5545-del.github.io/recoverflow-landing/client-dashboard.html?token=${token}`;
+      'https://proe5545-del.github.io/recoverflow-landing/client-dashboard.html?token=' + encodeURIComponent(token);
   }
 }
 </script>
