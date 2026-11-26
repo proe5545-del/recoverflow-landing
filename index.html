@@ -1,870 +1,271 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-W28EPY3EKG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-W28EPY3EKG');
-</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RecoverFlow — Récupérez vos paiements échoués automatiquement</title>
+<meta name="description" content="RecoverFlow détecte chaque échec de paiement Stripe et relance vos clients par email, automatiquement.">
+<meta property="og:title" content="RecoverFlow — Récupérez vos paiements échoués automatiquement">
+<meta property="og:description" content="Détection Stripe en temps réel, relances J0 / J+2 / J+5, 7 jours gratuits sans carte bancaire.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  :root {
-    --purple: #635bff;
-    --purple-dark: #4b44d4;
-    --purple-light: #ede9ff;
-    --black: #0a0a0a;
-    --gray: #6b7280;
-    --light: #f9fafb;
-    --white: #ffffff;
-    --green: #10b981;
-    --red: #ef4444;
-    --border: #e5e7eb;
-  }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--white);
-    color: var(--black);
-    line-height: 1.6;
-  }
-
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    z-index: 100;
-    padding: 0 2rem;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo { font-size: 20px; font-weight: 700; color: var(--purple); letter-spacing: -0.5px; }
-  .logo span { color: var(--black); }
-
-  nav a { text-decoration: none; color: var(--gray); font-size: 14px; margin-left: 2rem; }
-
-  .nav-cta {
-    background: var(--purple);
-    color: white !important;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 14px !important;
-    transition: background 0.2s;
-  }
-  .nav-cta:hover { background: var(--purple-dark); }
-
-  .hero {
-    padding: 140px 2rem 80px;
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--purple-light);
-    color: var(--purple);
-    padding: 6px 16px;
-    border-radius: 100px;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-  }
-  .badge::before { content: '✦'; font-size: 10px; }
-
-  h1 {
-    font-size: clamp(36px, 6vw, 64px);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -2px;
-    margin-bottom: 1.5rem;
-    color: var(--black);
-  }
-  h1 span { color: var(--purple); position: relative; }
-
-  .hero p {
-    font-size: 20px;
-    color: var(--gray);
-    max-width: 560px;
-    margin: 0 auto 2.5rem;
-    line-height: 1.7;
-  }
-
-  .hero-cta {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .btn-primary {
-    background: var(--purple);
-    color: white;
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .btn-primary:hover {
-    background: var(--purple-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(99,91,255,0.35);
-  }
-
-  .btn-secondary {
-    background: white;
-    color: var(--black);
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 500;
-    text-decoration: none;
-    border: 1.5px solid var(--border);
-    transition: all 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
-
-  .hero-note { font-size: 13px; color: var(--gray); }
-  .hero-note strong { color: var(--green); }
-
-  .stats { background: var(--black); padding: 60px 2rem; }
-  .stats-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 2rem;
-    text-align: center;
-  }
-
-  .stat-number {
-    font-size: 48px;
-    font-weight: 800;
-    color: var(--purple);
-    letter-spacing: -2px;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-  .stat-label { font-size: 14px; color: #9ca3af; }
-
-  .section { padding: 80px 2rem; max-width: 1000px; margin: 0 auto; }
-
-  .section-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--purple);
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
-
-  .section-sub { font-size: 18px; color: var(--gray); max-width: 560px; margin-bottom: 3rem; }
-
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-
-  .step {
-    background: var(--light);
-    border-radius: 16px;
-    padding: 2rem;
-    position: relative;
-    border: 1px solid var(--border);
-  }
-
-  .step-num {
-    width: 36px;
-    height: 36px;
-    background: var(--purple);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 1rem;
-  }
-
-  .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-  .step p { font-size: 15px; color: var(--gray); line-height: 1.6; }
-
-  .features { background: var(--light); padding: 80px 2rem; }
-  .features-inner { max-width: 1000px; margin: 0 auto; }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 3rem;
-  }
-
-  .feature-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.75rem;
-    border: 1px solid var(--border);
-    transition: all 0.2s;
-  }
-  .feature-card:hover {
-    border-color: var(--purple);
-    box-shadow: 0 4px 24px rgba(99,91,255,0.1);
-  }
-  .feature-icon { font-size: 28px; margin-bottom: 1rem; }
-  .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-  .feature-card p { font-size: 14px; color: var(--gray); line-height: 1.6; }
-
-  .pricing { padding: 80px 2rem; max-width: 900px; margin: 0 auto; text-align: center; }
-
-  .plans {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-    margin-top: 3rem;
-    text-align: left;
-  }
-
-  .plan { border: 1.5px solid var(--border); border-radius: 20px; padding: 2rem; position: relative; }
-  .plan.featured { border-color: var(--purple); background: var(--purple-light); }
-
-  .plan-badge {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--purple);
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 16px;
-    border-radius: 100px;
-    white-space: nowrap;
-  }
-
-  .plan-name { font-size: 14px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-  .plan-price { font-size: 48px; font-weight: 800; letter-spacing: -2px; color: var(--black); line-height: 1; margin-bottom: 4px; }
-  .plan-price span { font-size: 20px; font-weight: 500; color: var(--gray); }
-  .plan-desc { font-size: 14px; color: var(--gray); margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
-
-  .plan-features { list-style: none; margin-bottom: 2rem; }
-  .plan-features li { font-size: 14px; padding: 6px 0; display: flex; align-items: center; gap: 8px; color: var(--black); }
-  .plan-features li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 13px; }
-  .plan-features li.no::before { content: '✕'; color: var(--red); }
-
-  .plan-cta { display: block; text-align: center; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.2s; }
-  .plan-cta.primary { background: var(--purple); color: white; }
-  .plan-cta.primary:hover { background: var(--purple-dark); }
-  .plan-cta.outline { border: 1.5px solid var(--border); color: var(--black); }
-  .plan-cta.outline:hover { border-color: var(--purple); color: var(--purple); }
-
-  .faq { background: var(--light); padding: 80px 2rem; }
-  .faq-inner { max-width: 700px; margin: 0 auto; }
-
-  .faq-item { background: white; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
-
-  .faq-q {
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 1.25rem 1.5rem;
-    text-align: left;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--black);
-  }
-  .faq-q::after { content: '+'; font-size: 20px; color: var(--purple); transition: transform 0.2s; }
-  .faq-q.open::after { transform: rotate(45deg); }
-  .faq-a { display: none; padding: 0 1.5rem 1.25rem; font-size: 15px; color: var(--gray); line-height: 1.7; }
-  .faq-a.open { display: block; }
-
-  .testimonials { padding: 80px 2rem; max-width: 1000px; margin: 0 auto; }
-
-  .testi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 3rem;
-  }
-
-  .testi-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
-
-  .final-cta { background: var(--black); padding: 100px 2rem; text-align: center; }
-  .final-cta h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; color: white; letter-spacing: -2px; margin-bottom: 1rem; }
-  .final-cta h2 span { color: var(--purple); }
-  .final-cta p { font-size: 18px; color: #9ca3af; margin-bottom: 2.5rem; }
-
-  footer { background: var(--black); border-top: 1px solid #1f2937; padding: 2rem; text-align: center; }
-  footer p { font-size: 13px; color: #6b7280; }
-
-  .trial-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
-  .trial-form input {
-    padding: 14px 20px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    font-size: 15px;
-    width: 280px;
-    outline: none;
-    transition: border 0.2s;
-  }
-  .trial-form input:focus { border-color: var(--purple); }
-  .trial-form button {
-    padding: 14px 28px;
-    background: var(--purple);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .trial-form button:hover { background: var(--purple-dark); }
-
-  @media (max-width: 640px) {
-    .trial-form input { width: 100%; }
-    .trial-form { flex-direction: column; align-items: center; }
-  }
+:root{--bg:#07061a;--ink:#f4f3ff;--mute:#a3a1c7;--line:rgba(255,255,255,.09);--glass:rgba(255,255,255,.045);--brand:#6c5cff;--brand2:#a46bff;--pink:#ff6bb5;--ok:#2ee59d;--bad:#ff5c7c}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:"Instrument Sans",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden}
+h1,h2,h3,.logo,.big{font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;letter-spacing:-.03em;line-height:1.04}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px;position:relative}
+/* aurora */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg)}
+.aurora i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.38;animation:drift 22s ease-in-out infinite alternate}
+.aurora i:nth-child(1){background:var(--brand);left:-15vmax;top:-20vmax}
+.aurora i:nth-child(2){background:var(--pink);right:-20vmax;top:5vmax;opacity:.2;animation-duration:28s}
+.aurora i:nth-child(3){background:#2a7bff;left:25vmax;bottom:-30vmax;opacity:.22;animation-duration:34s}
+@keyframes drift{to{transform:translate(8vmax,6vmax) scale(1.15)}}
+.aurora::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse at 50% 30%,#000,transparent 75%)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 28px;border-radius:14px;font-weight:600;transition:transform .25s,box-shadow .25s,background .25s;position:relative;overflow:hidden}
+.btn:focus-visible{outline:3px solid var(--brand2);outline-offset:3px}
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 12px 36px -8px rgba(108,92,255,.8)}
+.btn-primary::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:shine 3.5s infinite}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 18px 44px -8px rgba(108,92,255,.95)}
+.btn-ghost{background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(8px)}.btn-ghost:hover{border-color:var(--brand2);transform:translateY(-3px)}
+nav{position:sticky;top:0;z-index:20;background:rgba(7,6,26,.6);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-size:1.5rem;font-weight:800}.logo b{background:linear-gradient(120deg,var(--brand2),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav ul{display:flex;gap:28px;list-style:none;color:var(--mute);font-size:.95rem;align-items:center;padding:0}
+nav ul a:hover{color:#fff}nav .btn{padding:10px 18px;font-size:.9rem;color:#fff}
+/* hero */
+.hero{padding:84px 0 70px}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:50px;align-items:center}
+.pill{display:inline-flex;gap:8px;align-items:center;background:var(--glass);border:1px solid var(--line);color:#d9d4ff;font-size:.85rem;font-weight:500;padding:7px 15px;border-radius:99px;margin-bottom:26px}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+h1{font-size:clamp(2.7rem,5.6vw,4.5rem);font-weight:800}
+h1 span{background:linear-gradient(110deg,#8f86ff,var(--pink),#8f86ff);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+@keyframes flow{to{background-position:200% center}}
+.lead{font-size:1.2rem;color:var(--mute);margin:26px 0 34px;max-width:32em}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+.assure{margin-top:22px;color:var(--mute);font-size:.95rem}.assure b{color:var(--ok)}
+/* mockup */
+.stage{position:relative;perspective:1200px;padding:30px 0}
+.dash{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:24px;backdrop-filter:blur(20px);box-shadow:0 50px 100px -30px rgba(0,0,0,.8),0 0 80px -20px rgba(108,92,255,.5);transform-style:preserve-3d;transition:transform .2s ease-out}
+.dh{display:flex;justify-content:space-between;color:var(--mute);font-size:.85rem}
+.dh em{font-style:normal;color:var(--ok);display:flex;gap:6px;align-items:center}.dh em::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.2}}
+.big{font-size:3rem;font-weight:800;margin:8px 0 0}.big small{font-size:1rem;color:var(--ok);font-weight:600;margin-left:10px;font-family:"Instrument Sans",sans-serif;letter-spacing:0}
+svg.chart{width:100%;height:110px;display:block;margin:6px 0 14px;overflow:visible}
+.line{fill:none;stroke:url(#g1);stroke-width:3;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;animation:draw 4s ease-in-out infinite}
+.area{fill:url(#g2);opacity:0;animation:fadearea 4s ease-in-out infinite}
+@keyframes draw{0%{stroke-dashoffset:420}55%,90%{stroke-dashoffset:0}100%{stroke-dashoffset:-420}}
+@keyframes fadearea{0%{opacity:0}55%,90%{opacity:1}100%{opacity:0}}
+.feed{display:grid;gap:8px;min-height:176px;align-content:start}
+.row{display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.88rem;animation:slidein .6s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes slidein{from{opacity:0;transform:translateY(-14px) scale(.96)}}
+.row .ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none}
+.row .ic.mail{background:rgba(108,92,255,.25)}.row .ic.ok{background:rgba(46,229,157,.2)}.row .ic.bad{background:rgba(255,92,124,.2)}
+.row b{display:block;font-weight:600}.row span{color:var(--mute);font-size:.8rem}.row .amt{margin-left:auto;font-weight:600}.row .amt.ok{color:var(--ok)}
+.chip{position:absolute;display:flex;gap:10px;align-items:center;padding:11px 16px;border-radius:14px;background:rgba(20,18,50,.85);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(14px);font-size:.85rem;font-weight:500;box-shadow:0 20px 40px -12px rgba(0,0,0,.7);animation:bob 6s ease-in-out infinite;white-space:nowrap}
+.chip.a{left:-28px;top:6px}.chip.b{right:-18px;top:46%;animation-delay:-2s}.chip.c{left:-10px;bottom:-4px;animation-delay:-4s}
+@keyframes bob{50%{transform:translateY(-14px)}}
+/* marquee */
+.marq{border-block:1px solid var(--line);overflow:hidden;padding:18px 0;background:rgba(255,255,255,.02)}
+.track{display:flex;gap:48px;width:max-content;animation:scroll 32s linear infinite;color:var(--mute);font-weight:500}
+.track span::before{content:"✦";color:var(--brand2);margin-right:48px}
+@keyframes scroll{to{transform:translateX(-50%)}}
+/* stats */
+.stats{padding:70px 0 20px}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.stats b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:3.4rem;font-weight:800;background:linear-gradient(135deg,#fff,#b6a8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats span{color:var(--mute);font-size:.95rem}
+section{padding:90px 0}
+h2{font-size:clamp(2rem,4.2vw,3.2rem);font-weight:800;text-align:center;max-width:15em;margin:0 auto 14px}
+.sub{text-align:center;color:var(--mute);max-width:36em;margin:0 auto 54px}
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative;margin-top:30px}
+.tl::before,.tl::after{content:"";position:absolute;top:27px;left:10%;height:3px;border-radius:3px}
+.tl::before{right:10%;background:var(--line)}
+.tl::after{width:0;background:linear-gradient(90deg,var(--bad),var(--brand2),var(--ok));transition:width 3.2s ease-out}
+.tl.go::after{width:80%}
+.nd{text-align:center;position:relative;z-index:1}
+.nd .o{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:#14122e;border:2px solid var(--line);transition:all .5s;font-size:.9rem}
+.tl.go .nd .o{border-color:var(--brand2);box-shadow:0 0 28px -4px var(--brand2)}
+.tl.go .nd:first-child .o{border-color:var(--bad);box-shadow:0 0 28px -4px var(--bad)}
+.tl.go .nd:last-child .o{border-color:var(--ok);box-shadow:0 0 28px -4px var(--ok)}
+.tl.go .nd:nth-child(2) .o{transition-delay:.7s}.tl.go .nd:nth-child(3) .o{transition-delay:1.5s}.tl.go .nd:nth-child(4) .o{transition-delay:2.3s}.tl.go .nd:nth-child(5) .o{transition-delay:3s}
+.nd h3{font-size:1rem;margin-bottom:4px}.nd p{color:var(--mute);font-size:.85rem}
+/* cards */
+.grid{display:grid;gap:20px}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{position:relative;background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:28px;overflow:hidden;transition:transform .3s,border-color .3s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,0%),rgba(140,110,255,.22),transparent 70%);opacity:0;transition:opacity .3s}
+.card:hover{transform:translateY(-5px);border-color:rgba(164,107,255,.5)}.card:hover::before{opacity:1}
+.card>*{position:relative}
+.card .n{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:800;background:linear-gradient(135deg,var(--brand),var(--brand2));margin-bottom:16px}
+.card .ic{font-size:2rem;margin-bottom:12px;display:inline-block;animation:bob 5s ease-in-out infinite}
+.card:nth-child(2n) .ic{animation-delay:-1.5s}.card:nth-child(3n) .ic{animation-delay:-3s}
+.card h3{font-size:1.2rem;margin-bottom:8px}.card p{color:var(--mute);font-size:.95rem}
+/* plans */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:840px;margin:0 auto}
+.plan{background:var(--glass);border:1px solid var(--line);border-radius:26px;padding:36px;position:relative;display:flex;flex-direction:column}
+.plan.pop{border:1px solid transparent;background:linear-gradient(#0f0d2c,#0f0d2c) padding-box,linear-gradient(135deg,var(--brand),var(--pink)) border-box;box-shadow:0 40px 90px -40px rgba(108,92,255,.9)}
+.tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--brand),var(--pink));font-size:.8rem;font-weight:600;padding:5px 14px;border-radius:99px;white-space:nowrap}
+.plan h3{font-size:1.3rem}.price{font-family:"Bricolage Grotesque",sans-serif;font-size:3.2rem;font-weight:800;margin:10px 0 4px}.price small{font-size:1rem;color:var(--mute);font-weight:500}
+.plan>p{color:var(--mute);margin-bottom:18px}
+.plan ul{list-style:none;padding:0;margin:0 0 28px;flex:1}.plan li{padding:6px 0;font-size:.95rem}.plan li::before{content:"✓";color:var(--ok);font-weight:700;margin-right:10px}
+.faq{max-width:720px;margin:0 auto}
+details{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin-bottom:12px;transition:border-color .3s}
+details[open]{border-color:rgba(164,107,255,.5)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--brand2);font-size:1.4rem;line-height:1;transition:transform .3s}details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--mute);margin-top:10px}
+.final{margin:0 24px 70px;border-radius:34px;background:linear-gradient(135deg,var(--brand),var(--brand2) 55%,var(--pink));background-size:200% 200%;animation:flow2 8s ease-in-out infinite alternate;text-align:center;padding:84px 24px;position:relative;overflow:hidden}
+@keyframes flow2{to{background-position:100% 100%}}
+.final h2{margin-bottom:12px}.final p{opacity:.9;margin-bottom:28px}
+.final .btn{background:#fff;color:#4a3bd6}.final .btn::after{display:none}
+footer{text-align:center;color:var(--mute);font-size:.9rem;padding:0 0 40px}
+/* reveal */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s}.rv.in{opacity:1;transform:none}
+@media(max-width:920px){.hero .wrap,.g3,.g4,.plans{grid-template-columns:1fr}.stats .wrap{grid-template-columns:1fr 1fr}nav ul li:not(:last-child){display:none}.hero{padding-top:44px}.chip.a{left:0}.chip.b{right:0}.tl{grid-template-columns:1fr;gap:26px}.tl::before,.tl::after{display:none}.big{font-size:2.5rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.line{stroke-dashoffset:0}.area{opacity:1}.tl::after{width:80%}}
 </style>
 </head>
 <body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<nav><div class="wrap">
+  <a class="logo" href="#">Recover<b>Flow</b></a>
+  <ul><li><a href="#comment">Comment ça marche</a></li><li><a href="#tarifs">Tarifs</a></li><li><a href="#faq">FAQ</a></li><li><a class="btn btn-primary" href="#essai">Essai gratuit 7 jours</a></li></ul>
+</div></nav>
 
-<!-- NAV -->
-<nav>
-  <div class="logo">Recover<span>Flow</span></div>
+<header class="hero"><div class="wrap">
   <div>
-    <a href="#comment">Comment ça marche</a>
-    <a href="#tarifs">Tarifs</a>
-    <a href="#faq">FAQ</a>
-    <a href="#essai" class="nav-cta">Essai gratuit 7 jours</a>
+    <span class="pill"><i></i>Nouveau : récupération automatique des paiements</span>
+    <h1>Arrêtez de perdre de l'argent sur les <span>paiements échoués</span></h1>
+    <p class="lead">RecoverFlow détecte automatiquement chaque échec de paiement Stripe et relance vos clients par email, sans que vous ayez à lever le petit doigt.</p>
+    <div class="cta"><a class="btn btn-primary" href="#essai">Commencer l'essai gratuit →</a><a class="btn btn-ghost" href="#comment">Voir comment ça marche</a></div>
+    <p class="assure"><b>7 jours gratuits</b> · Sans carte bancaire · Annulation à tout moment</p>
   </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="badge">Nouveau — Récupération automatique des paiements</div>
-  <h1>Arrêtez de perdre de l'argent sur les <span>paiements échoués</span></h1>
-  <p>RecoverFlow détecte automatiquement chaque échec de paiement Stripe et relance vos clients par email — sans que vous n'ayez à lever le petit doigt.</p>
-  <div class="hero-cta">
-    <a href="#essai" class="btn-primary">Commencer l'essai gratuit →</a>
-    <a href="#comment" class="btn-secondary">Voir comment ça marche</a>
-  </div>
-  <p class="hero-note"><strong>7 jours gratuits</strong> — Sans carte bancaire — Annulation à tout moment</p>
-</section>
-
-<!-- STATS -->
-<div class="stats">
-  <div class="stats-inner">
-    <div>
-      <div class="stat-number">4</div>
-      <div class="stat-label">relances automatiques par paiement échoué</div>
-    </div>
-    <div>
-      <div class="stat-number">J+10</div>
-      <div class="stat-label">durée maximale de la séquence de relance</div>
-    </div>
-    <div>
-      <div class="stat-number">$0</div>
-      <div class="stat-label">à investir — fonctionne 24h/24 sans vous</div>
-    </div>
-    <div>
-      <div class="stat-number">5min</div>
-      <div class="stat-label">pour connecter votre Stripe et démarrer</div>
+  <div class="stage" id="stage">
+    <div class="chip a">❌ Paiement échoué : carte expirée</div>
+    <div class="chip b">📧 Relance J0 envoyée</div>
+    <div class="chip c">✅ Paiement récupéré +79 $</div>
+    <div class="dash" id="dash" aria-label="Aperçu du dashboard (démo)">
+      <div class="dh"><span>Revenus récupérés · démo</span><em>En direct</em></div>
+      <div class="big"><span id="rev">0</span> $<small>▲ 100% auto</small></div>
+      <svg class="chart" viewBox="0 0 300 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#6c5cff"/><stop offset="1" stop-color="#2ee59d"/></linearGradient>
+        <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6c5cff" stop-opacity=".4"/><stop offset="1" stop-color="#6c5cff" stop-opacity="0"/></linearGradient></defs>
+        <path class="area" d="M0 88 C40 84 60 62 100 64 S160 40 200 30 S270 14 300 8 L300 100 L0 100Z"/>
+        <path class="line" d="M0 88 C40 84 60 62 100 64 S160 40 200 30 S270 14 300 8"/>
+      </svg>
+      <div class="feed" id="feed"></div>
     </div>
   </div>
-</div>
+</div></header>
 
-<!-- DÉMO INTERACTIVE -->
-<section style="padding:60px 2rem;max-width:700px;margin:0 auto;text-align:center;">
-  <p class="section-label">Démo en direct</p>
-  <h2 class="section-title">Voici ce qui se passe automatiquement</h2>
-  <div style="margin-top:2.5rem;display:flex;flex-direction:column;gap:0;align-items:center;">
-    <div style="background:#fff5f5;border:1.5px solid #fee2e2;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
-      <span style="font-size:20px;">❌</span> <strong>Paiement échoué</strong> — carte expirée
-    </div>
-    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
-      <span style="font-size:20px;">📧</span> <strong>J0</strong> — Email de relance envoyé automatiquement
-    </div>
-    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
-      <span style="font-size:20px;">📧</span> <strong>J+2</strong> — Rappel automatique
-    </div>
-    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div style="background:#ede9ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
-      <span style="font-size:20px;">📧</span> <strong>J+5</strong> — Dernier avertissement
-    </div>
-    <div style="font-size:24px;color:var(--gray);margin:8px 0;">↓</div>
-    <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:1.25rem 2rem;width:100%;max-width:400px;">
-      <span style="font-size:20px;">✅</span> <strong>Paiement récupéré</strong> — <span style="color:#10b981;font-weight:700;">+79$</span>
-    </div>
+<div class="marq" aria-hidden="true"><div class="track" id="track"></div></div>
+
+<div class="stats"><div class="wrap">
+  <div class="rv"><b><span data-count="4">0</span></b><span>relances automatiques par paiement échoué</span></div>
+  <div class="rv"><b>J+<span data-count="10">0</span></b><span>durée maximale de la séquence de relance</span></div>
+  <div class="rv"><b>$<span data-count="0">0</span></b><span>à investir, ça tourne 24h/24 sans vous</span></div>
+  <div class="rv"><b><span data-count="5">0</span> min</b><span>pour connecter votre Stripe et démarrer</span></div>
+</div></div>
+
+<section id="comment"><div class="wrap">
+  <h2 class="rv">Voici ce qui se passe automatiquement</h2>
+  <p class="sub rv">Un paiement échoue. Pendant que vous dormez, RecoverFlow s'occupe du reste.</p>
+  <div class="tl" id="tl">
+    <div class="nd"><div class="o">❌</div><h3>Paiement échoué</h3><p>Carte expirée</p></div>
+    <div class="nd"><div class="o">J0</div><h3>Email de relance</h3><p>Envoyé automatiquement</p></div>
+    <div class="nd"><div class="o">J+2</div><h3>Rappel</h3><p>Automatique</p></div>
+    <div class="nd"><div class="o">J+5</div><h3>Dernier avertissement</h3><p>Automatique</p></div>
+    <div class="nd"><div class="o">✅</div><h3>Paiement récupéré</h3><p>+79 $</p></div>
   </div>
-</section>
-
-<!-- COMMENT ÇA MARCHE -->
-<section class="section" id="comment">
-  <p class="section-label">Comment ça marche</p>
-  <h2 class="section-title">Branchez-vous. Oubliez. Récupérez.</h2>
-  <p class="section-sub">En moins de 5 minutes, votre système de relance automatique est actif pour toujours.</p>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <h3>Connectez votre Stripe</h3>
-      <p>Copiez votre URL webhook RecoverFlow dans votre dashboard Stripe. Ça prend 2 minutes.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <h3>RecoverFlow détecte tout</h3>
-      <p>Dès qu'un paiement échoue chez un de vos clients, notre système le capte instantanément.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <h3>Email automatique envoyé</h3>
-      <p>Votre client reçoit un email professionnel avec un lien direct pour mettre à jour sa carte.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <h3>Vous récupérez l'argent</h3>
-      <p>Le client paie, votre abonnement reprend. Vous n'avez rien fait — RecoverFlow a tout géré.</p>
-    </div>
+  <div class="grid g4" style="margin-top:70px">
+    <div class="card rv"><div class="n">1</div><h3>Connectez votre Stripe</h3><p>Copiez votre URL webhook RecoverFlow dans votre dashboard Stripe. Ça prend 2 minutes.</p></div>
+    <div class="card rv"><div class="n">2</div><h3>RecoverFlow détecte tout</h3><p>Dès qu'un paiement échoue, notre système le capte instantanément.</p></div>
+    <div class="card rv"><div class="n">3</div><h3>Email automatique envoyé</h3><p>Votre client reçoit un email professionnel avec un lien direct pour mettre à jour sa carte.</p></div>
+    <div class="card rv"><div class="n">4</div><h3>Vous récupérez l'argent</h3><p>Le client paie, votre abonnement reprend. Vous n'avez rien fait.</p></div>
   </div>
-</section>
+</div></section>
 
-<!-- FEATURES -->
-<div class="features">
-  <div class="features-inner">
-    <p class="section-label">Fonctionnalités</p>
-    <h2 class="section-title">Tout ce dont vous avez besoin</h2>
-    <p class="section-sub">Une seule plateforme pour récupérer chaque centime perdu automatiquement.</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3>Détection en temps réel</h3>
-        <p>Chaque échec de paiement est intercepté en moins d'une seconde grâce à notre intégration Stripe directe.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📧</div>
-        <h3>Emails de relance intelligents</h3>
-        <p>Des emails professionnels envoyés automatiquement avec un lien de paiement direct. Taux de récupération jusqu'à 72%.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>Sécurité niveau bancaire</h3>
-        <p>Validation cryptographique de chaque webhook Stripe. Vos données et celles de vos clients sont protégées à 100%.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔄</div>
-        <h3>Relances séquentielles</h3>
-        <p>Si le client ne réagit pas, un 2ème email est envoyé à J+2, puis un 3ème à J+5. Automatiquement.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Dashboard en temps réel</h3>
-        <p>Suivez vos revenus récupérés, le nombre de relances envoyées et le taux de succès en un coup d'œil.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🌍</div>
-        <h3>100% automatique</h3>
-        <p>Une fois configuré, RecoverFlow tourne 24h/24 sans aucune intervention de votre part. Zéro maintenance.</p>
-      </div>
-    </div>
+<section style="padding-top:0"><div class="wrap">
+  <h2 class="rv">Tout ce dont vous avez besoin</h2>
+  <p class="sub rv">Une seule plateforme pour récupérer chaque centime perdu automatiquement.</p>
+  <div class="grid g3">
+    <div class="card rv"><div class="ic">⚡</div><h3>Détection en temps réel</h3><p>Chaque échec de paiement est intercepté en moins d'une seconde grâce à l'intégration Stripe directe.</p></div>
+    <div class="card rv"><div class="ic">📧</div><h3>Emails de relance intelligents</h3><p>Des emails professionnels envoyés automatiquement, avec un lien de paiement direct.</p></div>
+    <div class="card rv"><div class="ic">🔒</div><h3>Sécurité niveau bancaire</h3><p>Validation cryptographique de chaque webhook Stripe pour protéger vos données et celles de vos clients.</p></div>
+    <div class="card rv"><div class="ic">🔄</div><h3>Relances séquentielles</h3><p>Un 2e email à J+2, puis un 3e à J+5, automatiquement.</p></div>
+    <div class="card rv"><div class="ic">📊</div><h3>Dashboard en temps réel</h3><p>Suivez vos revenus récupérés, les relances envoyées et le taux de succès en un coup d'œil.</p></div>
+    <div class="card rv"><div class="ic">🌍</div><h3>100% automatique</h3><p>Une fois configuré, RecoverFlow tourne 24h/24. Zéro maintenance.</p></div>
   </div>
-</div>
+</div></section>
 
-<!-- TARIFS -->
-<section class="pricing" id="tarifs">
-  <p class="section-label">Tarifs</p>
-  <h2 class="section-title">Simple, transparent, rentable</h2>
-  <p class="section-sub">Commencez gratuitement. Payez seulement quand vous récupérez de l'argent.</p>
+<section id="tarifs" style="padding-top:0"><div class="wrap">
+  <h2 class="rv">Simple, transparent, rentable</h2>
+  <p class="sub rv">Commencez gratuitement, sans carte bancaire. Les premiers marchands gardent le tarif bêta de $29/mois à vie.</p>
   <div class="plans">
-    <div class="plan">
-      <div class="plan-name">Gratuit</div>
-      <div class="plan-price">$0 <span>/ 7 jours</span></div>
-      <div class="plan-desc">Essayez sans engagement ni carte bancaire.</div>
-      <ul class="plan-features">
-        <li>Connexion Stripe illimitée</li>
-        <li>Jusqu'à 50 relances</li>
-        <li>Emails automatiques</li>
-        <li class="no">Relances séquentielles</li>
-        <li class="no">Dashboard avancé</li>
-        <li class="no">Support prioritaire</li>
-      </ul>
-      <a href="#essai" class="plan-cta outline">Commencer gratuitement</a>
-    </div>
-    <div class="plan featured">
-      <div class="plan-badge">Le plus populaire</div>
-      <div class="plan-name">Premium</div>
-      <div class="plan-price">$29 <span>/ mois</span></div>
-      <div class="plan-desc">Tout ce qu'il faut pour récupérer chaque paiement échoué.</div>
-      <ul class="plan-features">
-        <li>Connexion Stripe illimitée</li>
-        <li>Relances illimitées</li>
-        <li>Emails automatiques</li>
-        <li>Relances séquentielles J+2 J+5</li>
-        <li>Dashboard en temps réel</li>
-        <li>Support prioritaire</li>
-      </ul>
-      <a href="#" onclick="startCheckout(event)" class="plan-cta primary">Essai gratuit 7 jours →</a>
-    </div>
+    <div class="plan rv"><h3>Gratuit</h3><div class="price">$0 <small>/ 7 jours</small></div><p>Essayez sans engagement.</p>
+      <ul><li>Connexion Stripe illimitée</li><li>Jusqu'à 50 relances</li><li>Emails automatiques</li><li>Relances séquentielles</li><li>Dashboard avancé</li><li>Support prioritaire</li></ul>
+      <a class="btn btn-ghost" href="#essai">Commencer gratuitement</a></div>
+    <div class="plan pop rv"><span class="tag">Le plus populaire · Tarif bêta</span><h3>Premium</h3><div class="price">$29 <small>/ mois</small></div><p>Tout pour récupérer chaque paiement échoué.</p>
+      <ul><li>Connexion Stripe illimitée</li><li>Relances illimitées</li><li>Emails automatiques</li><li>Relances séquentielles J+2, J+5</li><li>Dashboard en temps réel</li><li>Support prioritaire</li></ul>
+      <a class="btn btn-primary" href="#essai">Essai gratuit 7 jours →</a></div>
   </div>
-</section>
+</div></section>
 
-<!-- BETA -->
-<section class="testimonials">
-  <p class="section-label">Bêta ouverte</p>
-  <h2 class="section-title">Soyez parmi les premiers utilisateurs</h2>
-  <p class="section-sub">RecoverFlow est en bêta ouverte. Les premiers marchands bénéficient d'un tarif préférentiel à vie.</p>
-  <div class="testi-grid">
-    <div class="testi-card" style="text-align:center;padding:2.5rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚀</div>
-      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Lancement bêta</h3>
-      <p style="color:var(--gray);font-size:15px;">Rejoignez les premiers marchands qui testent RecoverFlow et donnez votre avis pour améliorer le produit.</p>
-    </div>
-    <div class="testi-card" style="text-align:center;padding:2.5rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">💰</div>
-      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Tarif bêta à vie</h3>
-      <p style="color:var(--gray);font-size:15px;">Les premiers utilisateurs gardent le tarif bêta de $29/mois à vie, même quand le prix augmentera.</p>
-    </div>
-    <div class="testi-card" style="text-align:center;padding:2.5rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🛡️</div>
-      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Sans risque</h3>
-      <p style="color:var(--gray);font-size:15px;">7 jours gratuits, sans carte bancaire. Si RecoverFlow ne récupère pas vos paiements, vous ne payez rien.</p>
-    </div>
+<section id="faq" style="padding-top:0"><div class="wrap">
+  <h2 class="rv">Questions fréquentes</h2><p class="sub rv">Les réponses avant de vous lancer.</p>
+  <div class="faq rv">
+    <details><summary>Est-ce que RecoverFlow accède à mon argent Stripe ?</summary><p>Non. RecoverFlow détecte uniquement les échecs de paiement et envoie des emails de relance. Votre argent reste sous votre contrôle dans Stripe.</p></details>
+    <details><summary>Comment connecter mon compte Stripe ?</summary><p>Après votre inscription, vous recevez une URL webhook unique à coller dans votre dashboard Stripe. RecoverFlow est ensuite actif immédiatement.</p></details>
+    <details><summary>Que se passe-t-il après les 7 jours d'essai ?</summary><p>Vous choisissez de passer au plan Premium à $29/mois ou d'arrêter. Aucun prélèvement sans votre accord, et aucune carte bancaire requise pour l'essai.</p></details>
+    <details><summary>RecoverFlow fonctionne-t-il avec tous les pays ?</summary><p>Oui, avec tous les pays supportés par Stripe.</p></details>
+    <details><summary>Puis-je personnaliser les emails de relance ?</summary><p>Les emails incluent le nom de votre entreprise et le montant exact de la facture. Des options avancées sont disponibles avec le plan Premium.</p></details>
   </div>
-</section>
+</div></section>
 
-<!-- FAQ -->
-<div class="faq" id="faq">
-  <div class="faq-inner">
-    <p class="section-label">FAQ</p>
-    <h2 class="section-title">Questions fréquentes</h2>
-    <br>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Est-ce que RecoverFlow accède à mon argent Stripe ?</button>
-      <div class="faq-a">Non. RecoverFlow ne touche jamais à votre argent. Il détecte uniquement les événements d'échec de paiement et envoie des emails de relance. Votre argent reste 100% sous votre contrôle dans Stripe.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Comment connecter mon compte Stripe ?</button>
-      <div class="faq-a">Après votre inscription, vous recevez une URL webhook unique. Vous la collez dans votre dashboard Stripe en 2 clics. C'est tout — RecoverFlow est immédiatement actif.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Que se passe-t-il après les 7 jours d'essai ?</button>
-      <div class="faq-a">À la fin de l'essai gratuit, vous choisissez de passer au plan Premium à $29/mois ou d'arrêter. Aucun prélèvement automatique sans votre accord. Aucune carte bancaire requise pour l'essai.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">RecoverFlow fonctionne-t-il avec tous les pays ?</button>
-      <div class="faq-a">Oui. RecoverFlow fonctionne avec tous les pays supportés par Stripe. Si votre client est en Europe, en Amérique ou en Asie, les relances sont envoyées automatiquement.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Puis-je personnaliser les emails de relance ?</button>
-      <div class="faq-a">Les emails incluent automatiquement le nom de votre entreprise et le montant exact de la facture. Des options de personnalisation avancées sont disponibles dans le plan Premium.</div>
-    </div>
-  </div>
-</div>
-
-<!-- CTA FINAL -->
-<div class="final-cta" id="essai">
-  <h2>Prêt à récupérer votre <span>argent perdu</span> ?</h2>
-  <p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p>
-  <div class="trial-form">
-    <input type="email" placeholder="votre@email.com" id="trial-email" />
-    <button onclick="submitTrial()">Commencer l'essai gratuit →</button>
-  </div>
-  <p style="font-size:13px; color:#6b7280; margin-top:12px;">7 jours gratuits • Sans carte bancaire • Annulation en 1 clic</p>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <p>© 2026 RecoverFlow — Tous droits réservés</p>
-</footer>
+<div class="final rv" id="essai"><h2>Prêt à récupérer votre argent perdu ?</h2><p>Rejoignez les marchands qui récupèrent automatiquement leurs paiements échoués.</p><a class="btn" href="#">Commencer l'essai gratuit →</a><p style="margin:22px 0 0;font-size:.9rem">7 jours gratuits · Sans carte bancaire · Annulation en 1 clic</p></div>
+<footer>© 2026 RecoverFlow. Tous droits réservés.</footer>
 
 <script>
-  async function startCheckout(e) {
-  e.preventDefault();
-  
-  // Afficher le modal de choix
-  const modal = document.createElement('div');
-  modal.style.cssText = `
-    position:fixed;top:0;left:0;right:0;bottom:0;
-    background:rgba(0,0,0,0.8);z-index:9999;
-    display:flex;align-items:center;justify-content:center;
-    padding:1rem;
-  `;
-  
-  modal.innerHTML = `
-    <div style="background:#111;border:1px solid #333;border-radius:20px;padding:2rem;max-width:500px;width:100%;text-align:center;">
-      <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:8px;">Choisissez votre méthode de paiement</h2>
-      <p style="color:#6b7280;font-size:14px;margin-bottom:2rem;">$29/mois — Essai gratuit 7 jours</p>
-      
-      <div style="display:grid;gap:12px;">
-        
-        <div onclick="payWithCrypto()" style="background:#0d0d1a;border:1.5px solid #635bff;border-radius:12px;padding:1.5rem;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.background='#1a1a3e'" onmouseout="this.style.background='#0d0d1a'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-            <span style="font-size:24px;">⚡</span>
-            <div>
-              <div style="color:white;font-weight:700;font-size:16px;">Payer en USDT (Crypto)</div>
-              <div style="color:#635bff;font-size:12px;font-weight:600;">AUTOMATIQUE — Activation immédiate</div>
-            </div>
-          </div>
-          <p style="color:#9ca3af;font-size:13px;margin:0;">Paiement instantané via la blockchain Tron. Vous avez besoin d'un wallet crypto (Trust Wallet, Binance...).</p>
-        </div>
-
-        <div onclick="payManually()" style="background:#0d1a0d;border:1.5px solid #10b981;border-radius:12px;padding:1.5rem;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.background='#0d2e1f'" onmouseout="this.style.background='#0d1a0d'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-            <span style="font-size:24px;">💳</span>
-            <div>
-              <div style="color:white;font-weight:700;font-size:16px;">Payer par carte / virement</div>
-              <div style="color:#10b981;font-size:12px;font-weight:600;">MANUEL — Activation sous 2h.</div>
-            </div>
-          </div>
-          <p style="color:#9ca3af;font-size:13px;margin:0;">Payez par carte bancaire, virement ou autre méthode. Notre équipe active votre compte sous 2h.</p>
-        </div>
-
-      </div>
-      
-      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;">Annuler</button>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-}
-
-async function payWithCrypto() {
-  document.querySelector('[style*="position:fixed"]')?.remove();
-  
-  const email = prompt('Entrez votre email pour activer votre compte après paiement :');
-  if (!email || !email.includes('@')) return;
-
-  try {
-    const res = await fetch('https://recoverflow-server.onrender.com/create-checkout-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert('Erreur : ' + (data.error || 'Réessayez.'));
-    }
-  } catch (err) {
-    alert('Erreur réseau. Réessayez dans quelques secondes.');
+(function(){
+  var rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  /* marquee */
+  var items=['Détection en temps réel','Relances J0 · J+2 · J+5','Webhooks Stripe sécurisés','Emails professionnels','Dashboard en temps réel','Zéro maintenance','Tous pays supportés par Stripe'];
+  document.getElementById('track').innerHTML=items.concat(items).map(function(t){return '<span>'+t+'</span>'}).join('');
+  /* count up */
+  function count(el){var to=+el.dataset.count,t0=null;if(rm||!to){el.textContent=to;return}
+    (function f(t){if(!t0)t0=t;var p=Math.min((t-t0)/1400,1);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(performance.now())}
+  /* reveal */
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;
+    e.target.classList.add('in');e.target.querySelectorAll('[data-count]').forEach(count);io.unobserve(e.target)})},{threshold:.2});
+  document.querySelectorAll('.rv').forEach(function(el,i){el.style.transitionDelay=(i%4)*90+'ms';io.observe(el)});
+  var tl=document.getElementById('tl');
+  new IntersectionObserver(function(es,o){if(es[0].isIntersecting){tl.classList.add('go');o.disconnect()}},{threshold:.5}).observe(tl);
+  /* dashboard feed + revenue */
+  var feed=document.getElementById('feed'),rev=document.getElementById('rev'),total=0,k=0;
+  var ev=[['bad','❌','Paiement échoué','Carte expirée','','79 $'],['mail','📧','Relance J0 envoyée','Automatiquement','',''],['mail','📧','Rappel J+2','Automatique','',''],['ok','✅','Paiement récupéré','Carte mise à jour','ok','+79 $'],['bad','❌','Paiement échoué','Fonds insuffisants','','29 $'],['mail','📧','Relance J0 envoyée','Automatiquement','',''],['ok','✅','Paiement récupéré','Lien de paiement direct','ok','+29 $']];
+  function bump(to){var from=total;total=to;if(rm){rev.textContent=to;return}var t0=null;(function f(t){if(!t0)t0=t;var p=Math.min((t-t0)/900,1);rev.textContent=Math.round(from+(to-from)*p).toLocaleString('fr-FR');if(p<1)requestAnimationFrame(f)})(performance.now())}
+  function push(){var e=ev[k%ev.length];k++;
+    var d=document.createElement('div');d.className='row';
+    d.innerHTML='<div class="ic '+e[0]+'">'+e[1]+'</div><div><b>'+e[2]+'</b><span>'+e[3]+'</span></div><div class="amt '+e[4]+'">'+e[5]+'</div>';
+    feed.prepend(d);while(feed.children.length>3)feed.lastChild.remove();
+    if(e[4]==='ok')bump(total+parseInt(e[5].replace(/\D/g,''),10)*12)}
+  push();setInterval(push,2200);
+  /* 3D tilt */
+  var st=document.getElementById('stage'),dash=document.getElementById('dash');
+  if(!rm&&matchMedia('(hover:hover)').matches){
+    st.addEventListener('mousemove',function(e){var r=st.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;dash.style.transform='rotateY('+x*14+'deg) rotateX('+-y*12+'deg)'});
+    st.addEventListener('mouseleave',function(){dash.style.transform=''});
+    document.addEventListener('mousemove',function(e){var c=e.target.closest&&e.target.closest('.card');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')});
   }
-}
-
-function payManually() {
-  document.querySelector('[style*="position:fixed"]')?.remove();
-  
-  const modal = document.createElement('div');
-  modal.style.cssText = `
-    position:fixed;top:0;left:0;right:0;bottom:0;
-    background:rgba(0,0,0,0.8);z-index:9999;
-    display:flex;align-items:center;justify-content:center;
-    padding:1rem;overflow-y:auto;
-  `;
-  
-  modal.innerHTML = `
-    <div style="background:#111;border:1px solid #333;border-radius:20px;padding:2rem;max-width:500px;width:100%;text-align:center;margin:auto;">
-      <h2 style="color:white;font-size:22px;font-weight:800;margin-bottom:8px;">💳 Payer maintenant</h2>
-      <p style="color:#6b7280;font-size:14px;margin-bottom:1.5rem;">Effectuez votre paiement de <strong style="color:white;">$29</strong> via l'une des méthodes ci-dessous</p>
-      
-      <div style="background:#0d0d1a;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:left;">
-        <p style="color:#635bff;font-weight:700;margin-bottom:12px;">Option 1 — USDT Tron (TRC20)</p>
-        <div style="background:#1a1a2e;border-radius:8px;padding:12px;font-family:monospace;font-size:12px;color:white;word-break:break-all;margin-bottom:8px;">
-          TUAc4BS8A97jsozzUizBfrSNHwiFufpRj1
-        </div>
-        <button onclick="navigator.clipboard.writeText('TUAc4BS8A97jsozzUizBfrSNHwiFufpRj1')" style="background:#635bff;color:white;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:12px;">📋 Copier l'adresse</button>
-        <p style="color:#9ca3af;font-size:12px;margin-top:8px;">Envoyez exactement <strong style="color:white;">29 USDT</strong> sur le réseau Tron</p>
-      </div>
-
-      <div style="background:#0d1a0d;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:left;">
-        <p style="color:#10b981;font-weight:700;margin-bottom:12px;">Option 2 — Virement bancaire (Grey)</p>
-        <div style="color:#d1d5db;font-size:13px;line-height:2;">
-          <p>🏦 <strong style="color:white;">Bank :</strong> Grey Finance</p>
-          <p>👤 <strong style="color:white;">Nom :</strong> AMOUR PROSPER ALAGBO</p>
-          <p>💳 <strong style="color:white;">Account :</strong> 216183235376</p>
-          <p>🔀 <strong style="color:white;">Routing ACH :</strong> 101019644</p>
-          <p>🏦 <strong style="color:white;">Bank :</strong> Column Bank</p>
-        </div>
-      </div>
-
-      <div style="text-align:left;display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem;">
-        <p style="color:white;font-weight:600;">Après paiement, entrez votre email :</p>
-        <input id="manual-email" type="email" placeholder="votre@email.com" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
-        <input id="manual-name" type="text" placeholder="Votre nom / entreprise" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;" />
-        <select id="manual-method" style="padding:12px 16px;border-radius:10px;border:1.5px solid #333;background:#1a1a1a;color:white;font-size:15px;outline:none;width:100%;">
-          <option value="">Comment avez-vous payé ?</option>
-          <option value="USDT">USDT Crypto (TRC20)</option>
-          <option value="virement_usd">Virement bancaire USD</option>
-          <option value="paypal">PayPal</option>
-          <option value="wise">Wise</option>
-          <option value="autre">Autre méthode</option>
-       </select>
-      </div>
-      
-      <button onclick="submitManualPayment()" style="width:100%;padding:14px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">
-        ✅ J'ai payé — Notifier l'équipe
-      </button>
-      <button onclick="this.parentElement.parentElement.remove()" style="margin-top:8px;background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;width:100%;">Annuler</button>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-}
-
-function toggleFaq(btn) {
-  const answer = btn.nextElementSibling;
-  const isOpen = answer.classList.contains('open');
-  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
-  document.querySelectorAll('.faq-q').forEach(b => b.classList.remove('open'));
-  if (!isOpen) {
-    answer.classList.add('open');
-    btn.classList.add('open');
-  }
-}
-async function submitManualPayment() {
-  const modal = document.querySelector('[style*="position:fixed"]');
-  const nameEl = modal ? modal.querySelector('#manual-name') : document.getElementById('manual-name');
-  const emailEl = modal ? modal.querySelector('#manual-email') : document.getElementById('manual-email');
-  const methodEl = modal ? modal.querySelector('#manual-method') : document.getElementById('manual-method');
-
-  if (!nameEl || !emailEl || !methodEl) {
-    alert('Erreur formulaire. Rechargez la page.');
-    return;
-  }
-
-  const name = nameEl.value.trim();
-  const email = emailEl.value.trim();
-  const method = methodEl.value;
-
-  if (!name || !email || !method) {
-    alert('Veuillez remplir tous les champs.');
-    return;
-  }
-  try {
-    const res = await fetch('https://recoverflow-server.onrender.com/manual-payment-request', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, method, message: '' })
-    });
-    
-    const data = await res.json();
-    
-    document.querySelectorAll('[style*="position:fixed"]').forEach(el => el.remove());
-    
-    const successModal = document.createElement('div');
-    successModal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;`;
-    successModal.innerHTML = `
-      <div style="background:#111;border:1px solid #10b981;border-radius:20px;padding:2rem;max-width:400px;width:100%;text-align:center;">
-        <div style="font-size:48px;margin-bottom:1rem;">✅</div>
-        <h2 style="color:#10b981;font-size:22px;font-weight:800;margin-bottom:8px;">Demande envoyée !</h2>
-        <p style="color:#9ca3af;font-size:14px;">Nous vous contacterons à <strong style="color:white;">${email}</strong> sous 2h.</p>
-        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:1.5rem;padding:12px 24px;background:#10b981;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">Fermer</button>
-      </div>
-    `;
-    document.body.appendChild(successModal);
-    
-  } catch (err) {
-    alert('Erreur réseau. Réessayez.');
-  }
-}
-async function submitTrial() {
-  const email = document.getElementById('trial-email').value.trim();
-  const btn = document.querySelector('.trial-form button');
-  const companyName = prompt('Nom de votre entreprise :') || 'Nouveau Marchand';
-  if (!email || !email.includes('@')) {
-    alert('Veuillez entrer une adresse email valide.');
-    return;
-  }
-
-  btn.textContent = 'Activation en cours...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('https://recoverflow-server.onrender.com/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, company_name: companyName })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      document.getElementById('essai').innerHTML = `
-        <div style="max-width:650px;margin:auto;text-align:left;background:#1a1a2e;border-radius:16px;padding:2rem;">
-          <h2 style="color:#635bff;margin-bottom:1rem;">✅ Votre essai est activé !</h2>
-          <p style="color:white;margin-bottom:1.5rem;">Connectez votre Stripe en 4 étapes simples :</p>
-          <div style="background:#0d0d1a;border-radius:12px;padding:1.5rem;color:#ccc;font-size:15px;line-height:2.2;">
-            <p><strong style="color:white;">Étape 1</strong> — Connectez-vous à <a href="https://dashboard.stripe.com" target="_blank" style="color:#635bff;">dashboard.stripe.com</a></p>
-            <p><strong style="color:white;">Étape 2</strong> — Allez dans <strong style="color:white;">Développeurs → Webhooks</strong></p>
-            <p><strong style="color:white;">Étape 3</strong> — Cliquez sur <strong style="color:white;">Ajouter un endpoint</strong> et collez cette URL :</p>
-            <div style="background:#635bff;color:white;padding:12px;border-radius:8px;font-family:monospace;font-size:13px;word-break:break-all;margin:8px 0;">
-            ${data.webhook_url}
-            </div>
-            <p><strong style="color:white;">Étape 4</strong> — Sélectionnez l'événement : <strong style="color:#635bff;">invoice.payment_failed</strong> → Sauvegarder</p>
-          </div>
-          <p style="color:#10b981;font-size:14px;margin-top:1.5rem;font-weight:600;">🎉 C'est tout ! RecoverFlow surveille maintenant vos paiements automatiquement.</p>
-          <div style="margin-top:1rem;padding:1rem;background:#0d2e1f;border-radius:8px;">
-            <p style="color:#10b981;font-size:13px;margin-bottom:8px;">📊 Votre dashboard personnel :</p>
-            <a href="${data.dashboard_url}" target="_blank" style="color:#635bff;font-size:13px;word-break:break-all;">${data.dashboard_url}</a>
-          </div>
-          <p style="color:#9ca3af;font-size:12px;margin-top:8px;">Votre essai gratuit de 7 jours est actif. Aucune carte bancaire requise.</p>
-        </div>
-      `;
-    } else {
-      btn.textContent = 'Commencer l\'essai gratuit →';
-      btn.disabled = false;
-      alert(data.error || 'Une erreur est survenue.');
-    }
-  } catch (err) {
-    btn.textContent = 'Commencer l\'essai gratuit →';
-    btn.disabled = false;
-    alert('Erreur réseau. Réessayez dans quelques secondes.');
-  }
-}
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    const href = this.getAttribute('href');
-    if (href === '#') return;
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
-  });
-});
+})();
 </script>
 </body>
 </html>
